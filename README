@@ -1,1 +1,13 @@
-"Hello Ruby World"
+Title: Fantastic Ruby Scripts
+
+A multitude of scripts I wrote, their titles are pretty self explanitory on what they do.
+
+HttpdandVhost.rb - Changes some settings in the /etc/httpd/conf/httpd.conf file to optimal settings, along with lowering the maxclients setting to an appropriate level.  Also will create dummy vhost file for monitoring service.
+
+DomainChecker.rb - A quick little script that will grab all the domain names on the server, print their name, their set IP address, and will then query dig and print out the IP address in use.  
+
+RebootFinderV2.rb - Collects a multitude of pertinent information from server.  Includes last reboots, disk usage, disk health, sar records, dmesg & messages logs and a few other things.
+
+TrafficAnalyzer.rb - A conglomeration of a variety of scripts that checks server hits.  Includes highest visiting IP, IP blocks, Server hits divided by hour or minute, Domain hits compared to server hits, Top transfer log hits, What an IP is doing or where it's from
+
+CommonLib.rb - My attempt at creating a "common library" for commonly used functions. Still working on getting some arguments to work. 
