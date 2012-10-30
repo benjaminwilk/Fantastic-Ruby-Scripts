@@ -27,7 +27,7 @@ end
 
 commonlib_version = "0.63"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
-common_locator = `ls /home/nex*/CommonLib.rb`.strip
+common_locator = `ls /home/*/CommonLib.rb`.strip
 
   if common_locator.empty? == true
      `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
@@ -35,6 +35,8 @@ common_locator = `ls /home/nex*/CommonLib.rb`.strip
     commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
    if user_location != commonlib_location
       `mv #{common_locator} ~`
+   else
+    ;
    end
   end
 
