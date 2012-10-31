@@ -110,10 +110,6 @@ def TopIPBlockHits()
   puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow()}:#{SpecifyTime()}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
-#def IPLocationFinder()
-#   return `lynx -dump -nolist geoiptool.com/en/?IP=#{IPcheck()} | egrep -i 'Host Name|IP Address|country|Region|City|Postal|Longit|Lat'`
-#end
-
 def TopIPHitstoServer()
    finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow()}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
    return "\nTop 20 IP hits to server:\n#{finals}"
