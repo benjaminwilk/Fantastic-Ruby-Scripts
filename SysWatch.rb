@@ -168,17 +168,17 @@ entire_name = "#{CommonName()}_logger-#{Time.now.strftime("%m-%d-%Y-%H:%M:%S")}.
 #   x.print ServerLoad()
    puts ServerLoad()
    #x.puts MemoryUsage()
-   puts MemoryUsage()
+   MemoryUsage()
    #x.puts WebTraffic()
-   puts WebTraffic()
+   WebTraffic()
    #x.puts MySQLStatus()
-   MySQLStatus()
+   puts MySQLStatus()
    #x.puts "\n"
    puts "\n"
  
   sleep(numericaltime)
   end
- end
+# end
 File.close
 end
 
