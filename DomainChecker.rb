@@ -6,7 +6,8 @@ Version: 1.0
 
 #full_domain_path = `ls /etc/httpd/conf.d/vhost_*`.chomp.split(' ')
 full_domain_path = `locate 'conf.d/vhost_' | grep -v 000_defaults.conf`.chomp.split(' ')
-domain_name = `ls /etc/httpd/conf.d/vhost_* | awk -F'_' '{print $2}'| awk -F'.conf' '{print $1}'`.chomp.split(' ')
+#domain_name = `ls /etc/httpd/conf.d/vhost_* | grep -v 000 | awk -F'_' '{print $2}'| awk -F'.conf' '{print $1}'`.chomp.split(' ')
+domain_name = `locate /etc/httpd/conf.d/vhost_ | grep -v 000_defaults | awk -F'/' '{print $5}' | awk -F'vhost_' '{print $2}' | awk -F'.conf' '{print $1}'`.strip.split(' ')
 
 puts "\n%s %40s %43s" %["Domain name", "IP Address Listed", "IP Address Currently in Use"]
 domain_name.each_index { |x|
