@@ -7,7 +7,7 @@ Version: 1.0
   full_domain_path = `locate 'conf.d/vhost_' | grep -v 000_defaults.conf`.chomp.split(' ')
   domain_name = []
   full_domain_path.each_index do |x|
-     domain_name[x] = `echo '#{full_domain_path[x]}' | awk -F'/' '{print $5}' | awk -F'vhost_' '{print $2}' | awk -F'.conf' '{print $1}'`
+     domain_name[x] = `echo '#{full_domain_path[x]}' | awk -F'/' '{print $5}' | awk -F'vhost_' '{print $2}' | awk -F'.conf' '{print $1}'`.strip
   end
 
 
