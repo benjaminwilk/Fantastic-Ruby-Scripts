@@ -6,23 +6,36 @@
 
 commonlib_version = "0.63"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
-common_locator = `ls /home/nex*/CommonLib.rb`.strip
+common_locator = `ls /home/*/CommonLib.rb`.strip
+
   if common_locator.empty? == true
-     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+ #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
   else
     commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
    if user_location != commonlib_location
       `mv #{common_locator} ~`
+   else
+    ;
    end
   end
+
 running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+
   if running_version != commonlib_version
      puts "Looks like you're using an out of date version of Commonlib..."
      `rm -rf /home/nex*/CommonLib.rb`
-     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-  else
+ #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+  elsif running_version == commonlib_version
     print "You are running #{running_version}"
+  else
+    print "Ehhh.... \n"
+     `rm -rf /home/nex*/CommonLib.rb`
+#     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
   end
+
 require './CommonLib.rb'
 
 def SpecficIP()
