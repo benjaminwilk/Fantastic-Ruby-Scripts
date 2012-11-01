@@ -3,26 +3,39 @@
 #Last edited: October 4, 2012
 #!/usr/bin/env ruby
 
-require 'fileutils'
-require 'date'
+commonlib_version = "0.63"
+user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
+common_locator = `ls /home/*/CommonLib.rb`.strip
 
-common = `find /home/nex*/CommonLib.rb`.strip
-if common.empty? == false
-    `mv #{common} ~/#{common}`
-else
-   `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-end
+  if common_locator.empty? == true
+ #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+  else
+    commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
+   if user_location != commonlib_location
+      `mv #{common_locator} ~`
+   else
+    ;
+   end
+  end
 
-if File.read('./CommonLib.rb').grep(/#COMMONLIB VERSION 0.5/).any? == false
-   puts "Looks like you're using an out of date version of Commonlib..."
-   `rm -rf /home/nex*/CommonLib.rb`
-   `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-else
-  print "You are running "
-  puts File.read("./CommonLib.rb").grep(/#COMMONLIB VERSION */).to_s.gsub(/#/,'').downcase
-end
+running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
 
- require "CommonLib.rb"
+  if running_version != commonlib_version
+     puts "Looks like you're using an out of date version of Commonlib..."
+     `rm -rf /home/nex*/CommonLib.rb`
+ #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+  elsif running_version == commonlib_version
+    print "You are running #{running_version}"
+  else
+    print "Ehhh.... \n"
+     `rm -rf /home/nex*/CommonLib.rb`
+#     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
+     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+
+require './CommonLib.rb'
 
 def LogGrab()
   print "\nEnter the date you're looking for (Month/Day): "
