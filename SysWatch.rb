@@ -2,13 +2,12 @@
 #Change History: Tried adding in a logging function, but it didn't work out as I intended.  Removed the functionality, but might work on it longer.
 
 require 'fileutils'
+require 'optparse'
 
 commonlib_version = "0.63"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
-
   if common_locator.empty? == true
- #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
      `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
   else
     commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
@@ -18,38 +17,42 @@ common_locator = `ls /home/*/CommonLib.rb`.strip
     ;
    end
   end
-
 running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-
   if running_version != commonlib_version
      puts "Looks like you're using an out of date version of Commonlib..."
      `rm -rf /home/nex*/CommonLib.rb`
- #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
      `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
   elsif running_version == commonlib_version
     print "You are running #{running_version}"
   else
     print "Ehhh.... \n"
      `rm -rf /home/nex*/CommonLib.rb`
-#     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
      `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
   end
-
 require './CommonLib.rb'
 
-#It's a hack, I know, but it will work until I learn a better method
-@emailaddy = ''
+@duration = nil
+@emailaddy = nil
+
+opts = OptionParser.new
+opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user") {|e| @email_addy = e }
+opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
+opts.on("-h", "--help", "Help Menu"){puts "Help"}
 
 
 def TimeEdit()
-  print "Enter the frequency to check system status (num/unit): "
-  timeandwords = gets.downcase.strip
+  if @duration.nil? == true
+    print "Enter the frequency to check system status (num/unit): "
+    timeandwords = gets.downcase.strip
+   else
+    @duration = timeandwords
+  end
     numb_value = timeandwords.match(/\d+/).to_s.to_i
     word_value = timeandwords.match(/[a-z]+/).to_s
-  if word_value.length > 3
-    word_value = word_value.slice(0...3)
-  end
-
+    if word_value.length > 3
+      word_value = word_value.slice(0...3)
+    end
+  
   if word_value == "sec" or word_value == "s"
     numericaltime = numb_value * 1
   elsif word_value == "min" or word_value == "m"
@@ -60,9 +63,10 @@ def TimeEdit()
     puts "Sorry, I don't know what unit of time that is."
     TimeEdit()
   end
-  
+ if @emailaddy.nil? == true 
   print "\nWhat is the email address you would like to send to: "
    @emailaddy = gets.strip
+ end
   FileWriter(numericaltime)
 end
 
@@ -180,7 +184,6 @@ entire_name = "#{CommonName()}_logger-#{Time.now.strftime("%m-%d-%Y-%H:%M:%S")}.
  
   sleep(numericaltime)
   end
-# end
 File.close
 end
 
