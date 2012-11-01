@@ -1,6 +1,4 @@
 #SysWatch.rb - Shamelessly stolen from Eugene, rewritten in Ruby to check the system every so often for various stats
-#Version: 0.75
-#Last Edited: October 26, 2012
 #Change History: Tried adding in a logging function, but it didn't work out as I intended.  Removed the functionality, but might work on it longer.
 
 require 'fileutils'
@@ -150,7 +148,8 @@ def MySQLStatus()
      return "MySQL is not running. "
   else
     pwd =  File.readlines('/root/.mytop').grep(/pass=.*/).to_s.split('=')
-    return "%s\n%s" %["\nMySQL Data:", `mysqladmin -u iworx --password=#{pwd[1].strip} status`]
+    user =  File.readlines('/root/.mytop').grep(/user=.*/).to_s.split('=')
+    return "%s\n%s" %["\nMySQL Data:", `mysqladmin -u #{user[1]} --password=#{pwd[1].strip} status`]
   end
 end
 
@@ -166,7 +165,7 @@ entire_name = "#{CommonName()}_logger-#{Time.now.strftime("%m-%d-%Y-%H:%M:%S")}.
    puts "---------------------"
 #   x.puts "\nCurrent Server Load:\n1 Min  5 Min  15 Min"
 #   x.print ServerLoad()
-   puts ServerLoad()
+   ServerLoad()
    #x.puts MemoryUsage()
    MemoryUsage()
    #x.puts WebTraffic()
