@@ -35,7 +35,7 @@ opts = OptionParser.new
 opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user") {|e| @email_addy = e }
 opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
 opts.on("-h", "--help", String, "Help Menu")do 
-  HelpMenu()
+  puts HelpMenu()
  exit 
 end
 begin
@@ -45,9 +45,9 @@ end
 
 
 def HelpMenu()
-  puts "A user defined system monitor that alerts an email user of high than usual loads.\n"
-  puts "Usage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\n"
-  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
+  return "A user defined system monitor that alerts an email user of high than usual loads.\nUsage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\nOptions:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
+#  puts "Usage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\n"
+#  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
 end
 
 def TimeEdit()
