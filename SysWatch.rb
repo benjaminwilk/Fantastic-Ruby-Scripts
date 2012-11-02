@@ -154,8 +154,8 @@ def MySQLStatus()
    if mysql_status.match(/stopped/) or mysql_status.match(/subsys/)
      return "MySQL is not running. "
   else
-    pwd =  File.readlines('/root/.mytop').grep(/pass=.*/).to_s.split('=')
-    user =  File.readlines('/root/.mytop').grep(/user=.*/).to_s.split('=')
+    pwd =  File.readlines('/root/.mytop').grep(/pass=.*/).to_s.strip.split('=')
+    user =  File.readlines('/root/.mytop').grep(/user=.*/).to_s.strip.split('=')
     return "%s\n%s" %["\nMySQL Data:", `mysqladmin -u #{user[1]} --password=#{pwd[1].strip} status`]
   end
 end
