@@ -30,14 +30,21 @@ require './CommonLib.rb'
 @duration = nil
 @emailaddy = nil
 
+options = {}
 opts = OptionParser.new
 opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user") {|e| @email_addy = e }
 opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
-opts.on("-h", "--help", String, "Help Menu"){HelpMenu()}
+opts.on("-h", "--help", String, "Help Menu")do puts "Help" exit end
+begin
+  opts.parse!(ARGV)
+end
+
 
 
 def HelpMenu()
-  puts "Help"
+  puts "A user defined system monitor that alerts an email user of high than usual loads.\n"
+  puts "Usage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\n"
+  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
 end
 
 def TimeEdit()
@@ -63,7 +70,8 @@ def TimeEdit()
     puts "Sorry, I don't know what unit of time that is."
     TimeEdit()
   end
- if @emailaddy.nil? == true 
+ #if @emailaddy.nil? == true 
+ if @emailaddy.class != NilClass 
   print "\nWhat is the email address you would like to send to: "
    @emailaddy = gets.strip
  end
