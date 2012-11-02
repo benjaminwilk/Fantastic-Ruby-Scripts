@@ -55,7 +55,7 @@ def TimeEdit()
     print "Enter the frequency to check system status (num/unit): "
     timeandwords = gets.downcase.strip
    else
-    @duration = timeandwords
+    timeandwords = @duration.to_s
   end
     numb_value = timeandwords.match(/\d+/).to_s.to_i
     word_value = timeandwords.match(/[a-z]+/).to_s
