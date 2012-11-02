@@ -1,8 +1,6 @@
 #Changes Epoch time in .bash_history to something readable
-#Ben Wilk
 #Last Change: October 11, 2012
 #Last Edit: Some general cleanup, removed that pesky error, since 'bash' wasn't clean
-#!/usr/bin/env ruby
 
 require "fileutils"
 require "date"

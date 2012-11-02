@@ -1,16 +1,14 @@
 #TrafficAnalyzer.rb - A fork of the original, less bad
 #Version 1.5
-#Last edited: October 19, 2012
+#Last edited: November 2, 2012
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
 
 commonlib_version = "0.63"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
-
   if common_locator.empty? == true
- #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
   else
     commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
    if user_location != commonlib_location
@@ -19,24 +17,16 @@ common_locator = `ls /home/*/CommonLib.rb`.strip
     ;
    end
   end
-
 running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-
   if running_version != commonlib_version
      puts "Looks like you're using an out of date version of Commonlib..."
      `rm -rf /home/nex*/CommonLib.rb`
- #    `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
-  elsif running_version == commonlib_version
-    print "You are running #{running_version}"
-  else
-    print "Ehhh.... \n"
-     `rm -rf /home/nex*/CommonLib.rb`
-#     `wget -q goo.gl/VyGXf; chmod u+x CommonLib.rb;`
-     `wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb; chmod u+x CommonLib.rb`
+     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+   elsif running_version == commonlib_version
+    puts  "You are running #{running_version}"
   end
-
 require './CommonLib.rb'
+
 
 def SpecficIP()
    topviews =`grep #{IPcheck()} /home/*/var/*/logs/transfer.log|awk -F'"' '{print $2}'|sort|uniq -c|sort -nrk1|head -n20`
