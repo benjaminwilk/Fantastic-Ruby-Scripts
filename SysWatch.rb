@@ -33,7 +33,7 @@ require './CommonLib.rb'
 opts = OptionParser.new
 opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user") {|e| @email_addy = e }
 opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
-opts.on("-h", "--help", "Help Menu"){HelpMenu()}
+opts.on("-h", "--help", String, "Help Menu"){HelpMenu()}
 
 
 def HelpMenu()
