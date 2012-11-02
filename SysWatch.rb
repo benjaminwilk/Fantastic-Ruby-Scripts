@@ -28,11 +28,11 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
 require './CommonLib.rb'
 
 @duration = nil
-@emailaddy = nil
+#@emailaddy
 
 options = {}
 opts = OptionParser.new
-opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user") {|e| @email_addy = e }
+opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user"){|e| @emailaddy = e}
 opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
 opts.on("-h", "--help", String, "Help Menu")do
         options[:help] = true
@@ -46,7 +46,7 @@ end
 if options[:help]
   puts "A user defined system monitor that alerts an email user of high than usual loads.\nUsage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\nOptions:\n\t-d,  --duration \t define time between scans\n\t-e,  --email \t define email address to send to\n"
 #  puts "Usage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\n"
-#  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n" 
+#  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
 exit
 end
 
@@ -63,7 +63,7 @@ def TimeEdit()
     if word_value.length > 3
       word_value = word_value.slice(0...3)
     end
-  
+
   if word_value == "sec" or word_value == "s"
     numericaltime = numb_value * 1
   elsif word_value == "min" or word_value == "m"
@@ -85,7 +85,6 @@ def TimeEdit()
 end
 
 def Emailer(type)
-  # emailaddy = 'bwilk@nexcess.net'
 #   `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{rightnow("L")}" #{@emailaddy}`
    `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{Time.now.strftime("%m/%d/%Y - %H:%M:%S")}" #{@emailaddy}`
    puts "Email Sent!"
@@ -105,7 +104,7 @@ def ServerLoad()
 #    print "#{loadtriplicate[1].class}"
    loadtriplicate.each_index do |r|
     if loadtriplicate[r] > 8.0
-      Emailer(type) 
+      Emailer(type)
     end
   end
 end
@@ -122,6 +121,7 @@ def MemoryUsage()
     buffer = keywords[y].length - 10
     puts "%s   %#{buffer}d %s" %["#{keywords[y]}", "#{memdigit}", "MB"]
 #    puts memdigit = `grep -E '#{keywords[y]}' /proc/meminfo | awk '{print $2}'`.to_i / 1024
+
     #memdigit/1024
   if memdigit < 50
     Emailer(type)
@@ -179,7 +179,7 @@ entire_name = "#{CommonName()}_logger-#{Time.now.strftime("%m-%d-%Y-%H:%M:%S")}.
 #FileUtils.touch(entire_name)
 #File.open(entire_name, 'a+') do |x|
   while true
-#  puts "\n#{rightnow("L")}" 
+#  puts "\n#{rightnow("L")}"
    #x.puts "\n#{Time.now.strftime("%m/%d/%Y - %H:%M:%S")}"
    puts "\n#{Time.now.strftime("%m/%d/%Y - %H:%M:%S")}"
    #x.puts "---------------------"
@@ -195,11 +195,12 @@ entire_name = "#{CommonName()}_logger-#{Time.now.strftime("%m-%d-%Y-%H:%M:%S")}.
    puts MySQLStatus()
    #x.puts "\n"
    puts "\n"
- 
+
   sleep(numericaltime)
   end
 File.close
 end
 
 TimeEdit()
+
 
