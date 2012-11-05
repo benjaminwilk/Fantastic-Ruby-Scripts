@@ -10,7 +10,7 @@ require "optparse"
 
 opts = OptionParser.new
 options ={}
-opts.on("-n", "--name", String, "Name of user")do
+opts.on("-n username", "--name username", String, "Name of user")do
    |n| @username = n
    end
 opts.on("-h", "--help", "Help Menu")do
