@@ -28,7 +28,6 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
 require './CommonLib.rb'
 
 @duration = nil
-#@emailaddy
 
 options = {}
 opts = OptionParser.new
