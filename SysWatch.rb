@@ -33,21 +33,11 @@ options = {}
 opts = OptionParser.new
 opts.on("-e EMAIL_ADDRESSS", "--email EMAIL_ADDRESS", String, "Email address of user"){|e| @emailaddy = e}
 opts.on("-d time", "--duration time", String, "Time to wait per scan") {|t| @duration = t }
-opts.on("-h", "--help", String, "Help Menu")do
-        options[:help] = true
-end
 
 begin
   opts.parse!(ARGV)
 end
 
-
-if options[:help]
-  puts "A user defined system monitor that alerts an email user of high than usual loads.\nUsage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\nOptions:\n\t-d,  --duration \t define time between scans\n\t-e,  --email \t define email address to send to\n"
-#  puts "Usage:\n\truby SysWatch.rb\n\truby SysWatch.rb [option][arg]\n"
-#  puts "Options:\n\t-d,  --duration \t define time between scans\n-e,  --email \t define email address to send to\n"
-exit
-end
 
 def TimeEdit()
   if @duration.nil? == true

@@ -13,9 +13,6 @@ options ={}
 opts.on("-n username", "--name username", String, "Name of user")do
    |n| @username = n
    end
-opts.on("-h", "--help", "Help Menu")do
-   options[:help] = true
-end
 
 opts.parse!(ARGV)
 
@@ -29,13 +26,6 @@ Date_time = lambda {|username|
   taber = t.strftime("%m-%d-%Y-%T")
   return "./#{username}_#{taber}.log"
 }
-
-if options[:help] ==true
-  puts "A bash history converter - from epoch time to easily read time."
-  puts "Usage:\n\truby EpochTime.rb\n\truby EpochTime.rb -n [name]"
-  puts "Options:\n\t-n,  --name \t allows you to input name quickly\n"
-  exit
-end
 
 def UserFind()
   if @username.nil? == true 
