@@ -4,7 +4,7 @@
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
 
-commonlib_version = "0.63"
+commonlib_version = "0.65"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
   if common_locator.empty? == true
@@ -47,7 +47,7 @@ def HitsPerMinute()
     end
 
     mstart.upto(mend) { |x|
-     moment = "#{rightnow()}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
+     moment = "#{rightnow("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
      print "Server hits at '#{moment}: "
      puts `cat /home/*/var/*/logs/transfer.log | grep -c #{moment}`
       x = x.to_i
@@ -78,14 +78,14 @@ def CompareHitsDomain()
    shorten = `find #{foundomain} | awk -F'_' '{print $2}'| awk -F'.conf' '{print $1}'`.strip.capitalize
 
    hstart.upto(hend) { |x|
-    serverhits = `grep '#{rightnow()}:#{zeroadder(x)}' /home/*/var/*/logs/transfer.log |wc -l`.to_i
+    serverhits = `grep '#{rightnow("Date")}:#{zeroadder(x)}' /home/*/var/*/logs/transfer.log |wc -l`.to_i
     if serverhits == 0
       ;
     else
-      print "\nServer hits for #{rightnow()}:#{zeroadder(x)}:00-59 : "
+      print "\nServer hits for #{rightnow("Date")}:#{zeroadder(x)}:00-59 : "
       puts serverhits
       print "#{shorten} hits: "
-      puts `grep -c '#{rightnow()}:#{zeroadder(x)}' #{transfer} `
+      puts `grep -c '#{rightnow("Date")}:#{zeroadder(x)}' #{transfer} `
    end
     x = x.to_i
     x = x.next
@@ -102,7 +102,7 @@ def HourPerHourHits()
 #        x = "0" + x
 #      end
     print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
-    puts `cat /home/*/var/*/logs/transfer.log | grep -c #{rightnow()}:#{zeroadder(x)}`
+    puts `cat /home/*/var/*/logs/transfer.log | grep -c #{rightnow("Date")}:#{zeroadder(x)}`
     x = x.to_i
     x = x.next
    }
@@ -110,11 +110,11 @@ end
 
 def TopIPBlockHits()
    puts "\nTop 20 IP block hits to server: "
-  puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow()}:#{SpecifyTime()}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
+  puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow("Date")}:#{SpecifyTime()}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
 def TopIPHitstoServer()
-   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow()}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
+   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("Date")}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
    return "\nTop 20 IP hits to server:\n#{finals}"
 end
 
@@ -140,14 +140,14 @@ def TopHitsPerDomain()
   transferlog = `wc -l /home/*/var/*/logs/transfer.log | sort -nrk1 | awk '{print $2}' | grep -v 'total'`.split("\n")
 
   transferlog.each_index { |x|
-    domainhits = `grep '#{rightnow()}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
+    domainhits = `grep '#{rightnow("Date")}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
     if domainhits.length <= 1
      print ''
     else 
     print "\n"
     print `find #{transferlog[x]}|awk -F"/" '{print $5"/"$7}'`.strip
     print " hits : "
-    puts `grep -c '#{rightnow()}:#{zeroadder(hour)}' #{transferlog[x]}`
+    puts `grep -c '#{rightnow("Date")}:#{zeroadder(hour)}' #{transferlog[x]}`
     puts domainhits
 #    puts `grep '#{rightnow}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
     end

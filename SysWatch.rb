@@ -4,7 +4,7 @@
 require 'fileutils'
 require 'optparse'
 
-commonlib_version = "0.63"
+commonlib_version = "0.65"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
   if common_locator.empty? == true
@@ -39,16 +39,12 @@ begin
 end
 
 def TimeEdit()
-#   if @duration.match(/(\d+$)/)
-#     raise ArgumentError "Incorrect duration input.  Jam number  and word together"
-#   end
-
   if @duration.nil? == true
     print "Enter the frequency to check system status (num/unit): "
     timeandwords = gets.downcase.strip
     @duration = timeandwords
    elsif @duration.match(/\d+$/)
-     raise ArgumentError, "Incorrect duration input.  Jam number and word together"
+     raise ArgumentError, "Incorrect duration input.  Jam number and word together."
    else
     timeandwords = @duration.to_s
   end

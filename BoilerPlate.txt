@@ -64,7 +64,7 @@ require './CommonLib.rb'
 #Version 2.5
 #Replaced the wgets with curls which don't get hit with that annoying certificate error.  Also removed that condition that would never occur at the very bottom.  
 
-commonlib_version = "0.63"
+commonlib_version = "0.65"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
   if common_locator.empty? == true

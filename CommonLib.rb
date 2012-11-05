@@ -1,4 +1,4 @@
-#COMMONLIB VERSION 0.63
+#COMMONLIB VERSION 0.65
 #Change date: Oct 11, 2012
 #Last edit: General cleanup
 
@@ -27,19 +27,24 @@
   end
 
 #A time function that got really screwed up, trying to implement arguments for long time version and short
-  def rightnow()
-    return Time.now.strftime("%d/%b/%Y")
+  def rightnow(*num_value)
+    num_value = num_value.to_s
+    #return Time.now.strftime("%d/%b/%Y")
    #L is short for Long.  Get it.  
-#   if arguement == "L"
-#    return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
-   #'T' is short for time
-  # elsif arguement == "T"
-#   else
-#    return Time.now.strftime("%H:%M:%S")
- #  else 
- #   fail("You need accompanying argument.")
-#   end
-  end
+   if num_value == "MonthHour"
+    return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
+
+   elsif num_value == "Hour"
+    return Time.now.strftime("%H:%M:%S")
+
+   if num_value == "Date"
+    return Time.now.strftime("%d/%b/%Y")
+
+   else 
+    fail("Requires accompanying argument.")
+    #return Time.now.strftime("%d/%b/%Y")
+   end
+ end
  
 #  def TheTime()
 #   return Time.now.strftime("%H%M%S")
