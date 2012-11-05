@@ -4,6 +4,20 @@
 
 require "fileutils"
 require "date"
+require "optparse"
+
+@username = nil 
+
+opts = OptionParser.new
+options ={}
+opts.on("-n", "--name", String, "Name of user")do
+   |n| @username = n
+   end
+opts.on("-h", "--help", "Help Menu")do
+   options[:help] = true
+end
+
+opts.parse!(ARGV)
 
 AddUp = lambda {|numb|
   value = Time.at(numb)
@@ -16,9 +30,20 @@ Date_time = lambda {|username|
   return "./#{username}_#{taber}.log"
 }
 
+if options[:help] ==true
+  puts "A bash history converter - from epoch time to easily read time."
+  puts "Usage:\n\truby EpochTime.rb\n\truby EpochTime.rb -n [name]"
+  puts "Options:\n\t-n,  --name \t allows you to input name quickly\n"
+  exit
+end
+
 def UserFind()
+  if @username.nil? == true 
   print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
   name = gets.strip.downcase
+  else
+    name = @username.strip.downcase
+  end
 
   if name == "1"
     puts `\nls /home/*/.bash_history`.strip.split(' ')
