@@ -47,7 +47,7 @@ def TimeEdit()
     print "Enter the frequency to check system status (num/unit): "
     timeandwords = gets.downcase.strip
     @duration = timeandwords
-   elsif @duration.match(/(\d.*$)|(\w.*$)/)
+   elsif @duration.match(/\d+$/)
      raise ArgumentError, "Incorrect duration input.  Jam number and word together"
    else
     timeandwords = @duration.to_s
