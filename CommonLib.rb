@@ -45,6 +45,7 @@
     #return Time.now.strftime("%d/%b/%Y")
    end
  end
+end
  
 #  def TheTime()
 #   return Time.now.strftime("%H%M%S")
