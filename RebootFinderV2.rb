@@ -62,15 +62,6 @@ def DiskUsage()
    return `df -h`
 end
 
-def PhpFpm()
-  phplocate = `ls /etc/init.d/php-fpm`
-  if phplocate.empty? == false
-    puts `tail -n20 /var/log/php-fpm/error.log`
-  else
-    puts "php-fpm is not installed"
-  end
-end
-
 def Smartctl(disks)
    tester = `smartctl -a #{disks}`
    if tester.grep(/not supported/).any? == true
@@ -139,8 +130,6 @@ def FileWrite()
            disks.length.times do |x|
              p.puts "#{Smartctl(disks[x])}"
             end 
-         p.puts "\nPhp-fpm records:"
-	 p.puts "#{Phpfpm()}"
          p.puts "\nSar records: "
          p.puts "#{Sarrecords(Time.now)}"
     	 p.puts "\nDmesg results: "
