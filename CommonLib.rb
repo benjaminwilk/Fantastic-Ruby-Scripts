@@ -26,6 +26,13 @@
    return runner = gets.strip.upcase
   end
 
+  def Log_File_Creator(log_type)
+#    t = Time.now
+    current_time = Time.now.strftime("%m-%d-%Y-%T")
+    name = `uname -n`.strip
+    return "./#{name}_#{log_type}_#{current_time}.log"
+  end
+
 #A time function that got really screwed up, trying to implement arguments for long time version and short
   def rightnow(*num_value)
     num_value = num_value.to_s
