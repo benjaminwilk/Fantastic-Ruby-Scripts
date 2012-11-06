@@ -131,7 +131,7 @@ def FileWrite()
              p.puts "#{Smartctl(disks[x])}"
             end 
          p.puts "\nSar records: "
-         p.puts "#{Sarrecords(t)}"
+         p.puts "#{Sarrecords(Time.now)}"
     	 p.puts "\nDmesg results: "
   	 p.puts "#{Records(recs[0])}"
  	 p.puts "\n#{recs[1]}:"
