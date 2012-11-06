@@ -6,7 +6,28 @@ require "fileutils"
 require "date"
 require "optparse"
 
-@username = nil 
+commonlib_version = "0.651"
+user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
+common_locator = `ls /home/*/CommonLib.rb`.strip
+  if common_locator.empty? == true
+     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  else
+    commonlib_location = `ls #{common_locator} | awk -F'/' '{print $3}'`.to_s.strip
+   if user_location != commonlib_location
+      `mv #{common_locator} ~`
+   else
+    ;
+   end
+  end
+running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+  if running_version != commonlib_version
+     puts "Looks like you're using an out of date version of Commonlib..."
+     `rm -rf /home/nex*/CommonLib.rb`
+     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+   elsif running_version == commonlib_version
+    puts  "You are running #{running_version}"
+  end
+require './CommonLib.rb'
 
 opts = OptionParser.new
 options ={}
@@ -18,13 +39,15 @@ opts.parse!(ARGV)
 
 AddUp = lambda {|numb|
   value = Time.at(numb)
+#  return rightnow("MonthHour")
   return value.strftime("%m\\%d\\%y - %H:%M:%S")
 }
 
 Date_time = lambda {|username|
-  t = Time.now
-  taber = t.strftime("%m-%d-%Y-%T")
-  return "./#{username}_#{taber}.log"
+#  t = Time.now
+  #taber = t.strftime("%m-%d-%Y-%T")
+#  return "./#{username}_#{taber}.log"
+  return "./#{username}_#{rightnow("MonthTime")}.log"
 }
 
 def UserFind()

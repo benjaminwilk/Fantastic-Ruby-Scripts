@@ -1,4 +1,4 @@
-#COMMONLIB VERSION 0.65
+#COMMONLIB VERSION 0.651
 #Change date: Oct 11, 2012
 #Last edit: General cleanup
 
@@ -37,8 +37,10 @@
    elsif num_value == "Hour"
     return Time.now.strftime("%H:%M:%S")
 
-   if num_value == "Date"
+   elsif num_value == "Date"
     return Time.now.strftime("%d/%b/%Y")
+   elsif num_value == "MonthTime"
+    return Time.now.strftime("%m-%d-%Y-%T")
 
    else 
     fail("Requires accompanying argument.")

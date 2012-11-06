@@ -4,7 +4,7 @@
 require 'fileutils'
 require 'optparse'
 
-commonlib_version = "0.65"
+commonlib_version = "0.651"
 user_location = `pwd|awk -F'/' '{print $4}'`.to_s.strip
 common_locator = `ls /home/*/CommonLib.rb`.strip
   if common_locator.empty? == true
