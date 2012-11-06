@@ -1,6 +1,6 @@
 #Changes Epoch time in .bash_history to something readable
-#Last Change: October 11, 2012
-#Last Edit: Some general cleanup, removed that pesky error, since 'bash' wasn't clean
+#Last Change: November 6, 2012
+#Last Edit: Added Commonlib Functionality, made the log naming scheme easier, removed a lambda
 
 require "fileutils"
 require "date"
@@ -43,12 +43,12 @@ AddUp = lambda {|numb|
   return value.strftime("%m\\%d\\%y - %H:%M:%S")
 }
 
-Date_time = lambda {|username|
+#Date_time = lambda {|username|
 #  t = Time.now
   #taber = t.strftime("%m-%d-%Y-%T")
 #  return "./#{username}_#{taber}.log"
-  return "./#{username}_#{rightnow("MonthTime")}.log"
-}
+#  return "./#{username}_#{rightnow("MonthTime")}.log"
+#}
 
 def UserFind()
   if @username.nil? == true 
@@ -72,7 +72,9 @@ def UserFind()
     abort("Sorry, that directory doesn't exist.")
   end
 
-  newcopy = Date_time.call(name)
+  #newcopy = Date_time.call(name)
+   log_type = "#{name}"
+   newcopy = Log_File_Creator(log_type) 
 
   FileUtils.cp bash, newcopy
 
