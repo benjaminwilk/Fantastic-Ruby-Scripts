@@ -4,7 +4,7 @@
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
 
-commonlib_version = "0.651"
+commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
      `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
