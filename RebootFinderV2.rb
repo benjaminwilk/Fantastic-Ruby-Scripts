@@ -11,19 +11,19 @@ require 'fileutils'
 #   return "./#{name}_reboot_#{taber}.log"
 #}
 
-commonlib_version = "0.651"
+commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+   `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
   end
 running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-  if running_version != commonlib_version
+   if running_version != commonlib_version
      puts "Looks like you're using an out of date version of Commonlib..."
-     `rm -rf /home/nex*/CommonLib.rb `
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    `rm -rf /home/nex*/CommonLib.rb `
+    `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
    else #running_version == commonlib_version
-    puts  "You are running #{running_version}"
-  end
+     puts  "You are running #{running_version}"
+   end
 require './CommonLib.rb'
 
 def LastReboot()

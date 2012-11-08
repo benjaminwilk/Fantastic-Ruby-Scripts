@@ -95,7 +95,7 @@ def MemoryUsage()
   #grep -E '(Mem|Swap(T|F))' /proc/meminfo | awk '{print $2}'
   type = "Memory usage is high, and is alerting"
 
-  keywords = ["MemFree", "^Cached","MemTotal", "SwapFree", "SwapTotal"]
+  keywords = ["MemFree", "Cached","MemTotal", "SwapFree", "SwapTotal"]
   memdigit = []
   puts "\n\nMemory Usage:"
  keywords.each_index do |y|

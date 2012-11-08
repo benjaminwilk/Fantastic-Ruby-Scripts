@@ -87,10 +87,11 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
   end
 require './CommonLib.rb'
 
-#Version 2.75
+#Version 2.85
 #Stopped bothing trying to move the CommonLib file to the current directory, now it scans your home directory, if it isn't there, downloads it and moves on.  If it is there, checks version, if it's out of date, deletes it, and downloads new version.  
+#Instead of manually changing the version on each file, I've linked the version to a file on my website which will then compare the version of commonlib on the server
 
-commonlib_version = "0.651"
+commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
      `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
