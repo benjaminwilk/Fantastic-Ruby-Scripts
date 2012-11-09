@@ -17,8 +17,9 @@ end
   end
 
 #Asks user to input a specific hour, and will return to function
-  def SpecifyTime()
-   print "\nIs there a specific hour you would like to see: "
+  def SpecifyTime(printblock)
+#   print "\nIs there a specific hour you would like to see: "
+   print "\n#{printblock} "
    return spectime = gets.strip
   end
 

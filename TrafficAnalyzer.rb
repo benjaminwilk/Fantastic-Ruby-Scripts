@@ -3,7 +3,7 @@
 #Last edited: November 2, 2012
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
-
+=begin
 commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
@@ -17,7 +17,7 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
    else #running_version == commonlib_version
     puts  "You are running #{running_version}"
   end 
-
+=end
 require './CommonLib.rb'
 
 
@@ -34,9 +34,10 @@ def HitsPerMinute()
     mhour = '' 
     mstart = 00
     mend = 59
+	specify = "Is there a specific hour you would like to see: "
 
     while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
-      mhour = SpecifyTime()
+      mhour = SpecifyTime(specify)
     end
 
     mstart.upto(mend) { |x|
@@ -102,12 +103,14 @@ def HourPerHourHits()
 end
 
 def TopIPBlockHits()
+   specify = "Is there a specific time you would like to see: "
    puts "\nTop 20 IP block hits to server: "
-  puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow("Date")}:#{SpecifyTime()}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
+  puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow("Date")}:#{SpecifyTime(specify)}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
 def TopIPHitstoServer()
-   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("date")}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
+   specific = "Is there a specific hour you would like to see: "
+   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("date")}:#{SpecifyTime(specific)}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
    return "\nTop 20 IP hits to server:\n#{finals}"
 end
 
