@@ -3,11 +3,13 @@
 #Last edit: General cleanup
 
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
+class Looper
   def LoopFunction(elements)
    elements.each_index { |x|
     puts "#{x+1}. #{elements[x]}"
    }
   end
+end
 
 #Displays server's name -- useful for log files
   def CommonName()
@@ -34,19 +36,24 @@
   end
 
 #A time function that got really screwed up, trying to implement arguments for long time version and short
+#class Timedisplay
   def rightnow(*num_value)
-    num_value = num_value.to_s
+    num_value[0] = num_value[0].downcase
+#	puts num_value
+ #   date = "date"
+#	puts date.class
     #return Time.now.strftime("%d/%b/%Y")
    #L is short for Long.  Get it.  
-   if num_value == "MonthHour"
+   if num_value[0] == "monthhour"
     return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
 
-   elsif num_value == "Hour"
+   elsif num_value[0] == "hour"
     return Time.now.strftime("%H:%M:%S")
 
-   elsif num_value == "Date"
+   elsif num_value[0].eql?("date")
     return Time.now.strftime("%d/%b/%Y")
-   elsif num_value == "MonthTime"
+
+   elsif num_value[0] == "monthtime"
     return Time.now.strftime("%m-%d-%Y-%T")
 
    else 
@@ -54,6 +61,7 @@
     #return Time.now.strftime("%d/%b/%Y")
    end
  end
+#end
  
 #  def TheTime()
 #   return Time.now.strftime("%H%M%S")

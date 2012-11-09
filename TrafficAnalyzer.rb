@@ -4,7 +4,7 @@
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
 
-commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
+=begin commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
      `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
@@ -16,7 +16,8 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
      `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
    else #running_version == commonlib_version
     puts  "You are running #{running_version}"
-  end
+  end 
+=end
 require './CommonLib.rb'
 
 
@@ -106,7 +107,7 @@ def TopIPBlockHits()
 end
 
 def TopIPHitstoServer()
-   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("Date")}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
+   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("date")}:#{SpecifyTime()}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
    return "\nTop 20 IP hits to server:\n#{finals}"
 end
 
@@ -149,9 +150,11 @@ end
 def MainMenu()
    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
    puts "\nWhat analytics would you like to see (0 to quit): "
-   LoopFunction(menus) 
+   loop = Looper.new
+   loop.LoopFunction(menus) 
    print "Your selection: "
    selector = gets.strip
+   #timer = Timedisplay.new
     if selector == "7"
       puts SpecficIP()
     elsif selector == "3"
