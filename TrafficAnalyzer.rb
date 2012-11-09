@@ -4,7 +4,7 @@
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
 
-=begin commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
+commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
      `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
@@ -17,7 +17,7 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
    else #running_version == commonlib_version
     puts  "You are running #{running_version}"
   end 
-=end
+
 require './CommonLib.rb'
 
 
