@@ -2,52 +2,64 @@
 #Version 0.01
 #Last Changes - November 12, 2012
 
-#menus = ["sshd", "httpd", "mysqld"]
-#menus.each_index do |x|
-#`service #{menus[x]} status`
-#end
+require 'optparse'
+
+opts = OptionParser.new
+Options = {}
+opts.on("-q", "--quick", "Quick service output") do
+	 Options[:quick] = true
+end
+
+opts.parse!
+
+if Options[:quick] == true
+       puts "\nSystem Outlook: "
+        menus = ["sshd", "httpd", "mysqld", "djbdns"]
+        menus.each_index do |x|
+       `service #{menus[x]} status`
+        end
+  exit
+end
 
 def Lsws_Status()
-	`service lsws status`
-    puts `tail -fn20 /usr/local/lsws/logs/error.log`
+    `service lsws status`
+    `tail -n20 /usr/local/lsws/logs/error.log`
 end
 
 def Httpd_Status()
     lsws = `ls /etc/init.d/lsws`
-	if lsws.exists? == true
-	   Lsws_Status()
-	else	
-	puts httpd = `service httpd status`
-	end
-	if httpd.match("subsys")
-#		20.times do |x|
-		`service mysqld restart`
-	end
+    if lsws.empty? == false
+          Lsws_Status()
+     else   
+          puts httpd = `service httpd status`
+     if httpd.match("subsys")
+          `service mysqld restart`
+     end
+  end
 end
 
 def Sshd_Status()
-	puts httpd = `service httpd status`
-     if httpd.match("subsys")
-#       20.times do |x|
-	  print `tail -fn20 /var/log/httpd/error.log`
-     end
-end 
+     puts sshd = `service sshd status`
+     if sshd.match("subsys")
+        print `tail -n20 /var/log/secure`
+    end
+end
 
 def Mysqld_Status()
-	puts mysqld = `service mysqld status`
-	if mysqld.match("stopped")
-		print `tail -fn20 /var/log/mysqld.log`
-		`service mysqld restart`	
-	end
+     puts mysqld = `service mysqld status`
+    if mysqld.match("stopped")
+        print `tail -n20 /var/log/mysqld.log`
+       `service mysqld restart`
+    end
 end
 
 def PhpFpm_Status()
-  php = `ls /etc/init.d/php-fpm` 
-  if php.exists? == true
-	puts phpfpm = `service php-fpm status`
-  else
-    puts "Php-fpm is not installed"
-  end
+    php = `ls /etc/init.d/php-fpm`
+    if php.empty? == false
+       puts phpfpm = `service php-fpm status`
+	 else
+	   puts "Php-fpm is not installed"
+	 end
 end
 
 
