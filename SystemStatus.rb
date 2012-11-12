@@ -26,11 +26,21 @@ end
 def Mysqld_Status()
 	puts mysqld = `service mysqld status`
 	if httpd.match("stopped")
-		print `tail -fn20 /var/log/mysql.log`
+		print `tail -fn20 /var/log/mysqld.log`
 		`service mysqld restart`	
 	end
+end
+
+def PhpFpm_Status()
+  php = `ls /etc/init.d/php-fpm` 
+  if php.exists? == true
+	puts phpfpm = `service php-fpm status`
+  else
+    puts "Php-fpm is not installed"
+  end
 end
 
 Httpd_Status()
 Sshd_Status()
 Mysqld_Status()
+PhpFpm_Status()
