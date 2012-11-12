@@ -1,12 +1,17 @@
 #COMMONLIB VERSION 0.651
 #Change date: Oct 11, 2012
-#Last edit: General cleanup
+#Last edit: Cleaned up my functions and variable names
 
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
-class Looper
-  def LoopFunction(elements)
+class Loop_Function
+  def Menu_Loop(elements)
+   elements.push("Quit")
    elements.each_index { |x|
-    puts "#{x+1}. #{elements[x]}"
+	if elements[x].eql?("Quit")
+	  puts "0. #{elements[x]}"
+	else
+      puts "#{x+1}. #{elements[x]}"
+	end
    }
   end
 end
@@ -31,21 +36,18 @@ end
 
   def Log_File_Creator(log_type)
 #    t = Time.now
-    current_time = Time.now.strftime("%m-%d-%Y-%T")
+  #  current_time = Time.now.strftime("%m-%d-%Y-%T")
+    current_time =  Time_Format("monthtime")
     name = `uname -n`.strip
     return "./#{name}_#{log_type}_#{current_time}.log"
   end
 
 #A time function that got really screwed up, trying to implement arguments for long time version and short
 #class Timedisplay
-  def rightnow(*num_value)
-    num_value[0] = num_value[0].downcase
-#	puts num_value
- #   date = "date"
-#	puts date.class
-    #return Time.now.strftime("%d/%b/%Y")
-   #L is short for Long.  Get it.  
-   if num_value[0] == "monthhour"
+  def Time_Format(*num_value)
+   num_value[0] = num_value[0].downcase
+
+  if num_value[0] == "monthhour"
     return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
 
    elsif num_value[0] == "hour"
@@ -59,8 +61,7 @@ end
 
    else 
     fail("Requires accompanying argument.")
-    #return Time.now.strftime("%d/%b/%Y")
-   end
+  end
  end
 #end
  
@@ -90,7 +91,7 @@ end
  end
 
 #Removes commonlib library at the end of the script
- def SelfDestruct()
+ def CommonLib_Remover()
   puts "Goodbye"
   `rm -rf ./CommonLib.rb`
  end

@@ -3,7 +3,8 @@
 #Last edited: November 2, 2012
 #Last edit: More cleanup, edited the Commonlib loader
 #!/usr/bin/env ruby
-=begin
+
+
 commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
 common_locator = `ls ~/CommonLib.rb`.strip
   if common_locator.empty? == true
@@ -17,9 +18,8 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
    else #running_version == commonlib_version
     puts  "You are running #{running_version}"
   end 
-=end
-require './CommonLib.rb'
 
+require './CommonLib.rb'
 
 def SpecficIP()
    topviews =`grep #{IPcheck()} /home/*/var/*/logs/transfer.log|awk -F'"' '{print $2}'|sort|uniq -c|sort -nrk1|head -n20`
@@ -41,7 +41,7 @@ def HitsPerMinute()
     end
 
     mstart.upto(mend) { |x|
-     moment = "#{rightnow("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
+     moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
      print "Server hits at '#{moment}: "
      puts `cat /home/*/var/*/logs/transfer.log | grep -c #{moment}`
       x = x.to_i
@@ -72,14 +72,14 @@ def CompareHitsDomain()
    shorten = `find #{foundomain} | awk -F'_' '{print $2}'| awk -F'.conf' '{print $1}'`.strip.capitalize
 
    hstart.upto(hend) { |x|
-    serverhits = `grep '#{rightnow("Date")}:#{zeroadder(x)}' /home/*/var/*/logs/transfer.log |wc -l`.to_i
+    serverhits = `grep '#{Time_Format("Date")}:#{zeroadder(x)}' /home/*/var/*/logs/transfer.log |wc -l`.to_i
     if serverhits == 0
       ;
     else
-      print "\nServer hits for #{rightnow("Date")}:#{zeroadder(x)}:00-59 : "
+      print "\nServer hits for #{Time_Format("Date")}:#{zeroadder(x)}:00-59 : "
       puts serverhits
       print "#{shorten} hits: "
-      puts `grep -c '#{rightnow("Date")}:#{zeroadder(x)}' #{transfer} `
+      puts `grep -c '#{Time_Format("Date")}:#{zeroadder(x)}' #{transfer} `
    end
     x = x.to_i
     x = x.next
@@ -96,7 +96,7 @@ def HourPerHourHits()
 #        x = "0" + x
 #      end
     print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
-    puts `cat /home/*/var/*/logs/transfer.log | grep -c #{rightnow("Date")}:#{zeroadder(x)}`
+    puts `cat /home/*/var/*/logs/transfer.log | grep -c #{Time_Format("Date")}:#{zeroadder(x)}`
     x = x.to_i
     x = x.next
    }
@@ -105,12 +105,12 @@ end
 def TopIPBlockHits()
    specify = "Is there a specific time you would like to see: "
    puts "\nTop 20 IP block hits to server: "
-  puts `cat /home/*/var/*/logs/transfer.log | grep '#{rightnow("Date")}:#{SpecifyTime(specify)}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
+  puts `cat /home/*/var/*/logs/transfer.log | grep '#{Time_Format("Date")}:#{SpecifyTime(specify)}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
 def TopIPHitstoServer()
    specific = "Is there a specific hour you would like to see: "
-   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{rightnow("date")}:#{SpecifyTime(specific)}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
+   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{Time_Format("date")}:#{SpecifyTime(specific)}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
    return "\nTop 20 IP hits to server:\n#{finals}"
 end
 
@@ -136,14 +136,14 @@ def TopHitsPerDomain()
   transferlog = `wc -l /home/*/var/*/logs/transfer.log | sort -nrk1 | awk '{print $2}' | grep -v 'total'`.split("\n")
 
   transferlog.each_index { |x|
-    domainhits = `grep '#{rightnow("Date")}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
+    domainhits = `grep '#{Time_Format("Date")}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
     if domainhits.length <= 1
      print ''
     else 
     print "\n"
     print `find #{transferlog[x]}|awk -F"/" '{print $5"/"$7}'`.strip
     print " hits : "
-    puts `grep -c '#{rightnow("Date")}:#{zeroadder(hour)}' #{transferlog[x]}`
+    puts `grep -c '#{Time_Format("Date")}:#{zeroadder(hour)}' #{transferlog[x]}`
     puts domainhits
 #    puts `grep '#{rightnow}:#{zeroadder(hour)}' #{transferlog[x]} | awk '{print $1}' | sort | uniq -c | sort -nr | head -n 20 | sed 's/^[[:space:]]*//'`
     end
@@ -152,9 +152,9 @@ end
 
 def MainMenu()
    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
-   puts "\nWhat analytics would you like to see (0 to quit): "
-   loop = Looper.new
-   loop.LoopFunction(menus) 
+   puts "\nWhat analytics would you like to see: "
+   loop = Loop_Function.new
+   loop.Menu_Loop(menus) 
    print "Your selection: "
    selector = gets.strip
    #timer = Timedisplay.new
@@ -180,7 +180,7 @@ def MainMenu()
       MainMenu()
     end
    Again()
-   SelfDestruct()
+   CommonLib_Remover()
 end
 
 
