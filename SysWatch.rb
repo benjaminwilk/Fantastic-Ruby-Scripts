@@ -66,11 +66,11 @@ def TimeEdit()
   FileWriter(numericaltime)
 end
 
-def Emailer(type)
-#   `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{rightnow("L")}" #{@emailaddy}`
-   `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{Time.now.strftime("%m/%d/%Y - %H:%M:%S")}" #{@emailaddy}`
-   puts "Email Sent!"
- end
+  def Emailer(type)
+  #   `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{rightnow("L")}" #{@emailaddy}`
+    `printf "Server alert on #{CommonName()}\n#{type}" | mail -s "Server alert on #{CommonName()} on #{Time.now.strftime("%m/%d/%Y - %H:%M:%S")}" #{@emailaddy}`
+    puts "Email Sent!"
+  end
 
 
 def ServerLoad()

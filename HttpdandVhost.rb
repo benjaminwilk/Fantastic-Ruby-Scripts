@@ -4,6 +4,14 @@
 #Last Revision: August 13, 2012
 
 require "fileutils"
+require "optparse"
+
+#Options = {}
+#opts = OptionParse.new
+#opts.on('-v number', '--value number' integer, "Quick run the vhost and httpd.conf changer") do Options[:quick] = true
+#end
+
+#opts.parse!
 
 def User_Check()
    rootchecker = `whoami`.strip

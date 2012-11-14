@@ -80,7 +80,7 @@ def CompareHitsDomain()
       puts serverhits
       print "#{shorten} hits: "
       puts `grep -c '#{Time_Format("Date")}:#{zeroadder(x)}' #{transfer} `
-   end
+    end
     x = x.to_i
     x = x.next
 }

@@ -6,20 +6,30 @@ require "fileutils"
 require "date"
 require "optparse"
 
-commonlib_version = "0.651"
-common_locator = `ls ~/CommonLib.rb`.strip
-  if common_locator.empty? == true
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+class Common_library_function
+  def common_library_search
+    @commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
+    common_locator = `ls ~/CommonLib.rb`.strip
+    if common_locator.empty? == true
+      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+	end
   end
-running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-  if running_version != commonlib_version
-     puts "Looks like you're using an out of date version of Commonlib..."
-     `rm -rf /home/nex*/CommonLib.rb `
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-   else #running_version == commonlib_version
-    puts  "You are running #{running_version}"
+
+  def common_library_load
+    running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+    if running_version != @commonlib_version
+	  puts "Looks like you're using an out of date version of Commonlib..."
+      `rm -rf /home/nex*/CommonLib.rb `
+      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    else #running_version == commonlib_version
+      puts  "You are running #{running_version}"
+    end
   end
-require './CommonLib.rb'
+
+  def common_library_run
+     require './CommonLib.rb'
+  end
+end
 
 opts = OptionParser.new
 options ={}
