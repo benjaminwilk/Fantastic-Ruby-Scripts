@@ -42,15 +42,9 @@ opts.parse!(ARGV)
 AddUp = lambda {|numb|
   value = Time.at(numb)
 #  return rightnow("MonthHour")
-  return value.strftime("%m\\%d\\%y - %H:%M:%S")
+#  return value.strftime("%m\\%d\\%y - %H:%M:%S")
+  return value.Time_Format("monthhour")
 }
-
-#Date_time = lambda {|username|
-#  t = Time.now
-  #taber = t.strftime("%m-%d-%Y-%T")
-#  return "./#{username}_#{taber}.log"
-#  return "./#{username}_#{rightnow("MonthTime")}.log"
-#}
 
 class Epoch_function
   def epoch_entry
