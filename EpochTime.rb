@@ -52,28 +52,34 @@ AddUp = lambda {|numb|
 #  return "./#{username}_#{rightnow("MonthTime")}.log"
 #}
 
-class Epoch_function
-  def epoch_entry
-    if @username.nil? == true 
-      print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
       @name = gets.strip.downcase
+
+      if @name == "1"
+        puts `\nls /home/*/.bash_history`.strip.split(' ')
+        puts "\n"
+        epoch_entry
+      elsif @name == "0"
+        abort("Goodbye")
+      end
+
     else
       @name = @username.strip.downcase
     end
   end
 
   def epoch_search
-    if @name == "1"
+=begin   if @name == "1"
       puts `\nls /home/*/.bash_history`.strip.split(' ')
       puts "\n"
-      UserFind()
+      epoch_entry
     elsif @name == "0"
       abort("Goodbye")
     else
+=end
       @bash =  "/home/#{@name}/.bash_history".strip
-    end
+   # end
 
-    if File.exists?(@bash) == false 
+    if File.exists?(@bash) == false
       abort("Sorry, that directory doesn't exist.")
     end
   end
@@ -81,7 +87,7 @@ class Epoch_function
   def epoch_writer
     #newcopy = Date_time.call(name)
     log_type = "#{@name}"
-    newcopy = Log_File_Creator(log_type) 
+    newcopy = Log_File_Creator(log_type)
 
     FileUtils.cp @bash, newcopy
 
@@ -100,7 +106,7 @@ class Epoch_function
    puts "All done!"
   end
 end
- 
+
 comm = Common_library_function.new
 comm.common_library_search
 comm.common_library_load
