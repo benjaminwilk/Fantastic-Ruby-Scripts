@@ -8,7 +8,7 @@ require "optparse"
 
 class Common_library_function
   def common_library_search
-    @commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
+    @commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
     common_locator = `ls ~/CommonLib.rb`.strip
     if common_locator.empty? == true
       `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
@@ -55,7 +55,7 @@ AddUp = lambda {|numb|
 class Epoch_function
   def epoch_entry
     if @username.nil? == true
-      print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to:
+      print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
       @name = gets.strip.downcase
 
       if @name == "1"
