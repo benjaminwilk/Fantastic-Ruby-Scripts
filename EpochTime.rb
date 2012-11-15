@@ -52,51 +52,61 @@ AddUp = lambda {|numb|
 #  return "./#{username}_#{rightnow("MonthTime")}.log"
 #}
 
-def UserFind()
-  if @username.nil? == true 
-  print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
-  name = gets.strip.downcase
-  else
-    name = @username.strip.downcase
-  end
-
-  if name == "1"
-    puts `\nls /home/*/.bash_history`.strip.split(' ')
-    puts "\n"
-    UserFind()
-  elsif name == "0"
-    abort("Goodbye")
-  else
-    bash =  "/home/#{name}/.bash_history".strip
-  end
-
-  if File.exist?(bash) == false 
-    abort("Sorry, that directory doesn't exist.")
-  end
-
-  #newcopy = Date_time.call(name)
-   log_type = "#{name}"
-   newcopy = Log_File_Creator(log_type) 
-
-  FileUtils.cp bash, newcopy
-
-  puts "Writing..."
-  File.open(newcopy, "w") do  |output|
-   File.open(bash).each do |line|
-     if line[/#.*$/]
-      final  =  line.gsub(/#/, "").strip.to_i
-      final = AddUp.call(final)
-      output.puts final
-     else
-      output.puts line
-     end
+class Epoch_function
+  def epoch_entry
+    if @username.nil? == true 
+      print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
+      @name = gets.strip.downcase
+    else
+      @name = @username.strip.downcase
     end
   end
- puts "All done!"
+
+  def epoch_search
+    if @name == "1"
+      puts `\nls /home/*/.bash_history`.strip.split(' ')
+      puts "\n"
+      UserFind()
+    elsif @name == "0"
+      abort("Goodbye")
+    else
+      @bash =  "/home/#{@name}/.bash_history".strip
+    end
+
+    if File.exists?(@bash) == false 
+      abort("Sorry, that directory doesn't exist.")
+    end
+  end
+
+  def epoch_writer
+    #newcopy = Date_time.call(name)
+    log_type = "#{@name}"
+    newcopy = Log_File_Creator(log_type) 
+
+    FileUtils.cp @bash, newcopy
+
+    puts "Writing..."
+    File.open(newcopy, "w") do  |output|
+      File.open(@bash).each do |line|
+        if line[/#.*$/]
+          final  =  line.gsub(/#/, "").strip.to_i
+          final = AddUp.call(final)
+          output.puts final
+        else
+          output.puts line
+        end
+      end
+    end
+   puts "All done!"
+  end
 end
  
 comm = Common_library_function.new
 comm.common_library_search
 comm.common_library_load
 comm.common_library_run
-UserFind()
+epoch = Epoch_function.new
+epoch.epoch_entry
+epoch.epoch_search
+epoch.epoch_writer
+#UserFind()
