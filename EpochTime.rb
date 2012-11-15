@@ -42,8 +42,8 @@ opts.parse!(ARGV)
 AddUp = lambda {|numb|
   value = Time.at(numb)
 #  return rightnow("MonthHour")
-#  return value.strftime("%m\\%d\\%y - %H:%M:%S")
-  return value.Time_Format("monthhour")
+  return value.strftime("%m\\%d\\%y - %H:%M:%S")
+#  return value.Time_Format("monthhour")
 }
 
 class Epoch_function
