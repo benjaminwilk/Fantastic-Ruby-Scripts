@@ -52,6 +52,10 @@ AddUp = lambda {|numb|
 #  return "./#{username}_#{rightnow("MonthTime")}.log"
 #}
 
+class Epoch_function
+  def epoch_entry
+    if @username.nil? == true
+      print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to:
       @name = gets.strip.downcase
 
       if @name == "1"
