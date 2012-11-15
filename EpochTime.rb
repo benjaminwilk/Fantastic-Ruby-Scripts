@@ -94,5 +94,9 @@ def UserFind()
   end
  puts "All done!"
 end
-
+ 
+comm = Common_library_function.new
+comm.common_library_search
+comm.common_library_load
+comm.common_library_run
 UserFind()
