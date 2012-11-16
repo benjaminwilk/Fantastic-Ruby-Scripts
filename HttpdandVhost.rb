@@ -63,7 +63,6 @@ class Support_functions
     end
   end
 
-  private
   def server_name
     serName = `uname -n`
     return serName
