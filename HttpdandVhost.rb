@@ -1,9 +1,9 @@
 #Automator for vhost and httpd.conf file
-#Version 3.0
+#Version 2.5
 #Last Revision: Nov 16, 2012 
 
 require "fileutils"
-#require "optparse"
+require "optparse"
 
 #Options = {}
 #opts = OptionParse.new
@@ -26,27 +26,12 @@ class Support_functions
     puts "Checking for httpd.conf file changes  [#{Http_functions.new.http_search}] "
   end
 
-  def server_name
-    serName = `uname -n`
-    return serName
-  end
-
-  def ip_return
-    ipaddress = `ifconfig | head -n10 | awk '/inet addr:*/ {print $2}'| awk -F':' '{print $2}'`.strip
-    return ipaddress
-  end
-
-  def server_load
-    load = `cat /proc/loadavg | awk '{print $1" "$2" "$3}'`
-    return load
-  end
-
   def server_status 
     puts "\nServer name: #{server_name}"
     puts "Your IP address: #{ip_return}"
     print "Current server load: #{server_load}" 
   end
-  
+ 
   def choice_display(array)
     array.each_index { |x|
       puts "#{x+1}. #{array[x]}"
@@ -60,26 +45,38 @@ class Support_functions
     choice_display(selection)
     choice = gets.strip
     if choice == '1'
-     # VhostCreator()
       vhost = Vhost_functions.new
       vhost.vhost_creator
     elsif choice == '2'
-     # HttpdChanger()
       httpd = Http_functions.new
       httpd.http_change
     elsif choice == '3'
-#      VhostCreator()
-#      HttpdChanger()
-       vhost = Vhost_functions.new
-       vhost.vhost_creator
-       httpd = Http_functions.new
-       httpd.http_change
+      vhost = Vhost_functions.new
+      vhost.vhost_creator
+      httpd = Http_functions.new
+      httpd.http_change
     elsif choice == '4'
       abort("\nGoodbye.\n")
     else 
       puts "Please enter an appropriate number.\n"
       Chooser()
     end
+  end
+
+  private
+  def server_name
+    serName = `uname -n`
+    return serName
+  end
+
+  def ip_return
+    ipaddress = `ifconfig | head -n10 | awk '/inet addr:*/ {print $2}'| awk -F':' '{print $2}'`.strip
+    return ipaddress
+  end
+
+  def server_load
+    load = `cat /proc/loadavg | awk '{print $1" "$2" "$3}'`
+    return load
   end
 end
 
@@ -146,4 +143,4 @@ support.change_report
 support.main_menu
 Http_functions.new.http_restart
 `rm -rf vhost.txt`
-abort ("\nAll done\n")
+abort("\nAll done\n")
