@@ -33,10 +33,6 @@ class Common_library_function
   end
 end
 
-d1 = Common_library_function.new
-d1.common_library_load
-d1.common_library_run
-
 opts = OptionParser.new
 options ={}
 opts.on("-n username", "--name username", String, "Name of user")do
