@@ -43,14 +43,13 @@ opts.parse!(ARGV)
 
 AddUp = lambda {|numb|
   value = Time.at(numb)
-#  return rightnow("MonthHour")
   return value.strftime("%m\\%d\\%y - %H:%M:%S")
-#  return value.Time_Format("monthhour")
 }
 
 class Epoch_function
   def epoch_entry
-    if @username.nil? == true
+    arg_value = @username
+    if arg_value.nil? == true
       print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
       @@name = gets.strip.downcase
 
@@ -63,21 +62,12 @@ class Epoch_function
       end
 
     else
-      @@name = @username.strip.downcase
+      @@name = arg_value.strip.downcase
     end
   end
 
   def epoch_search
-=begin   if @name == "1"
-      puts `\nls /home/*/.bash_history`.strip.split(' ')
-      puts "\n"
-      epoch_entry
-    elsif @name == "0"
-      abort("Goodbye")
-    else
-=end
       @bash =  "/home/#{@@name}/.bash_history".strip
-   # end
 
     if File.exists?(@bash) == false
       abort("Sorry, that directory doesn't exist.")
@@ -114,4 +104,3 @@ epoch = Epoch_function.new
 epoch.epoch_entry
 epoch.epoch_search
 epoch.epoch_writer
-#UserFind()
