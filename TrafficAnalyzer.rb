@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 #TrafficAnalyzer.rb - A fork of the original, less bad
 #Version 1.5
 #Last edited: November 2, 2012

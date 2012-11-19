@@ -107,12 +107,12 @@ running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s
   end
 require './CommonLib.rb'
 
-#Version 3.0
+#Version 2.95
 #Basically Version 2.85 just with Objects
 
 class Common_library_function
   def common_library_search
-    @commonlib_version = `curl http://benwilk.com/CommonVersion.html`.strip
+    @commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
     common_locator = `ls ~/CommonLib.rb`.strip
     if common_locator.empty? == true
       `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
@@ -139,3 +139,37 @@ comm = Common_library_function.new
 comm.common_library_search
 comm.common_library_load
 comm.common_library_run
+
+
+#Version 3.0
+#Totally reworked library downloader, significantly shorter
+
+class Common_library_function
+  def common_library_exist
+    return File.exists?('CommonLib.rb')
+  end
+
+  def common_library_version
+    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+  end
+
+  def common_library_load
+    if Common_library_function.new.common_library_exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != Common_library_function.new.common_library_version
+        `rm -rf /home/nex*/CommonLib.rb `
+        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+      end
+    else
+      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    end
+  end
+
+  def common_library_run
+    require './CommonLib.rb'
+  end
+end
+
+d1 = Common_library_function.new
+d1.common_library_load
+d1.common_library_run

@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 #Changes Epoch time in .bash_history to something readable
 #Last Change: November 6, 2012
 #Last Edit: Added Commonlib Functionality, made the log naming scheme easier, removed a lambda
@@ -7,29 +8,34 @@ require "date"
 require "optparse"
 
 class Common_library_function
-  def common_library_search
-    @commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
-    common_locator = `ls ~/CommonLib.rb`.strip
-    if common_locator.empty? == true
-      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-	end
+  def common_library_exist
+    return File.exists?('CommonLib.rb')
+  end
+
+  def common_library_version
+    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
   end
 
   def common_library_load
-    running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-    if running_version != @commonlib_version
-	  puts "Looks like you're using an out of date version of Commonlib..."
-      `rm -rf /home/nex*/CommonLib.rb `
+    if Common_library_function.new.common_library_exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != Common_library_function.new.common_library_version
+        `rm -rf /home/nex*/CommonLib.rb `
+        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+      end
+    else
       `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-    else #running_version == commonlib_version
-      puts  "You are running #{running_version}"
     end
   end
 
   def common_library_run
-     require './CommonLib.rb'
+    require './CommonLib.rb'
   end
 end
+
+d1 = Common_library_function.new
+d1.common_library_load
+d1.common_library_run
 
 opts = OptionParser.new
 options ={}
@@ -50,18 +56,18 @@ class Epoch_function
   def epoch_entry
     if @username.nil? == true
       print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
-      @name = gets.strip.downcase
+      @@name = gets.strip.downcase
 
-      if @name == "1"
+      if @@name == "1"
         puts `\nls /home/*/.bash_history`.strip.split(' ')
         puts "\n"
         epoch_entry
-      elsif @name == "0"
+      elsif @@name == "0"
         abort("Goodbye")
       end
 
     else
-      @name = @username.strip.downcase
+      @@name = @username.strip.downcase
     end
   end
 
@@ -74,7 +80,7 @@ class Epoch_function
       abort("Goodbye")
     else
 =end
-      @bash =  "/home/#{@name}/.bash_history".strip
+      @bash =  "/home/#{@@name}/.bash_history".strip
    # end
 
     if File.exists?(@bash) == false
@@ -84,7 +90,7 @@ class Epoch_function
 
   def epoch_writer
     #newcopy = Date_time.call(name)
-    log_type = "#{@name}"
+    log_type = "#{@@name}"
     newcopy = Log_File_Creator(log_type)
 
     FileUtils.cp @bash, newcopy
@@ -105,10 +111,9 @@ class Epoch_function
   end
 end
 
-comm = Common_library_function.new
-comm.common_library_search
-comm.common_library_load
-comm.common_library_run
+d1 = Common_library_function.new
+d1.common_library_load
+d1.common_library_run
 epoch = Epoch_function.new
 epoch.epoch_entry
 epoch.epoch_search

@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 #Automator for vhost and httpd.conf file
 #Version 2.5
 #Last Revision: Nov 16, 2012 
