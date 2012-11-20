@@ -7,11 +7,15 @@ Version: 2.0
 
 class Domain_check
   def vhost_grab
-     return full_domain_path = Dir["/etc/httpd/conf.d/vhost_*"]
-   #  full_domain_path.each_index do |x|
-   #    full_domain_path[x] = full_domain_path[x].gsub("/etc/httpd/conf.d/vhost_", '').gsub(".conf",'')
-   #  end
-   #  return full_domain_path
+    full_domain_path = []
+    Dir["/etc/httpd/conf.d/vhost_*"].each {|x|
+      if x.include? "000"
+        print ""
+      else
+        full_domain_path.push("#{x}")
+      end
+    }
+    return full_domain_path.sort!
   end
 
   def zero_remover
