@@ -1,103 +1,153 @@
 #!/usr/bin/env ruby
 #TrafficAnalyzer.rb - A fork of the original, less bad
-#Version 1.5
-#Last edited: November 2, 2012
-#Last edit: More cleanup, edited the Commonlib loader
+#Version 1.75
+#Last edited: November 21, 2012
+#Last edit: Conversion of bash commands to ruby
 #!/usr/bin/env ruby
 
-
-commonlib_version = `curl --silent http://benwilk.com/CommonVersion.html`.strip
-common_locator = `ls ~/CommonLib.rb`.strip
-  if common_locator.empty? == true
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+class Common_library_function
+  def common_library_exist
+    return File.exists?('CommonLib.rb')
   end
-running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-  if running_version != commonlib_version
-     puts "Looks like you're using an out of date version of Commonlib..."
-     `rm -rf /home/nex*/CommonLib.rb`
-     `curl --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-   else #running_version == commonlib_version
-    puts  "You are running #{running_version}"
-  end 
 
-require './CommonLib.rb'
+  def common_library_version
+    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+  end
+
+  def common_library_load
+    if Common_library_function.new.common_library_exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != Common_library_function.new.common_library_version
+        `rm -rf /home/nex*/CommonLib.rb `
+        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+      end
+    else
+      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    end
+  end
+
+  def common_library_run
+    require './CommonLib.rb'
+  end
+end
 
 def SpecficIP()
-   topviews =`grep #{IPcheck()} /home/*/var/*/logs/transfer.log|awk -F'"' '{print $2}'|sort|uniq -c|sort -nrk1|head -n20`
-   if topviews.empty? == true
-    return "Doesn't look like there is anything here with that IP address."
-   else
-    return topviews 
-   end
+  ipfinder = []
+  b = Hash.new(0)
+  ipcheck = gets.strip
+  directories = Dir["/home/*/var/*/logs/transfer.log"]
+  directories.each_index do |x|
+    open(directories[x]).each_line do |y|
+      if y.include?(ipcheck)
+        ipfinder.push(y)
+      end
+    end
+  end
+  ipfinder.each_index do |x|
+    ipfinder[x].gsub!(/^.*(\] \")/,"").gsub!(/HTTP.*$/,"")
+  end
+  ipfinder.sort!
+  ipfinder.each do |v|
+    b[v] += 1
+  end
+  b = b.sort_by {|key, value| value}.reverse
+  puts "\nTop 20 hits by #{ipcheck}:\n"
+  b.each_with_index do |(key, value), index|
+    if index < 20
+      puts "#{value} #{key}"
+    end
+  end
 end
 
 def HitsPerMinute()
-    mhour = '' 
-    mstart = 00
-    mend = 59
-	specify = "Is there a specific hour you would like to see: "
+  mhour = ''
+  mstart = 00
+  mend = 59
+  specify = "Is there a specific hour you would like to see: "
+  while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
+    mhour = SpecifyTime(specify)
+  end
 
-    while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
-      mhour = SpecifyTime(specify)
+  mstart.upto(mend) { |x|
+    moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
+    print "Server hits at '#{moment}: "
+    count = 0
+    logs = Dir["/home/*/var/*/logs/transfer.log"]
+    logs.each_index do |y|
+      open(logs[y]).each_line do |z|
+        if z.include? moment
+          count = count + 1
+        end
+      end
     end
-
-    mstart.upto(mend) { |x|
-     moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
-     print "Server hits at '#{moment}: "
-     puts `cat /home/*/var/*/logs/transfer.log | grep -c #{moment}`
-      x = x.to_i
-      x = x.next
+    puts count
+    x = x.to_i
+    x = x.next
     }
 end
 
 def CompareHitsDomain()
-   domain = ''
+  domain = ''
    hstart = 00
    hend =  Time.now.hour
-
-   while domain == '\n' or domain == '' do 
+   transfer_log = ''
+   log_files = Dir["/home/*/var/*/logs/transfer.log"]
+   while domain == '\n' or domain == '' do
    print "Specific domain to check (keep blank to quit): "
    domain = gets.strip.downcase
      if domain == '\n' or domain == ''
        MainMenu()
      end
    end
-   foundomain = `find /etc/httpd/conf.d/vhost_#{domain}*`.strip.split(' ')#.class
-   if foundomain.empty? == true
-    abort("Sorry, it doesn't appear that domain exists")
-   elsif foundomain.length > 1
-    puts "\nYou will need to be a bit more specific with your domain name"
-    MainMenu()
+   usable_domain = Dir["/etc/httpd/conf.d/vhost_#{domain}*.conf"]
+   if usable_domain.empty? == true
+     abort("Sorry, it doesn't appear that domain exists")
    end
-   transfer = `awk '/Custom/ {print $2}' #{foundomain}`.split(' ').uniq
-   shorten = `find #{foundomain} | awk -F'_' '{print $2}'| awk -F'.conf' '{print $1}'`.strip.capitalize
-
+   open("#{usable_domain}").each_line do |x|
+     if x.include? "Custom"
+      transfer_log = x
+     end
+   end
+   transfer_log.gsub!("CustomLog","").gsub!("combined","")
    hstart.upto(hend) { |x|
-    serverhits = `grep '#{Time_Format("Date")}:#{zeroadder(x)}' /home/*/var/*/logs/transfer.log |wc -l`.to_i
-    if serverhits == 0
-      ;
-    else
-      print "\nServer hits for #{Time_Format("Date")}:#{zeroadder(x)}:00-59 : "
-      puts serverhits
-      print "#{shorten} hits: "
-      puts `grep -c '#{Time_Format("Date")}:#{zeroadder(x)}' #{transfer} `
-    end
-    x = x.to_i
-    x = x.next
-}
+   print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
+   count = 0
+   log_files.each_index do |y|
+     open(log_files[y]).each_line do |z|
+       if z.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+         count = count + 1
+       end
+     end
+   end
+   puts count
+
+   print "#{domain.capitalize} hits: "
+   local_count = 0
+   open(transfer_log.strip).each_line do |a|
+     if a.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+       local_count = local_count +1
+     end
+   end
+   puts local_count
+   }
 end
 
 def HourPerHourHits()
    start = 00
    stop = Time.now.hour
+   log_files = Dir["/home/*/var/*/logs/transfer.log"]
 
    start.upto(stop) { |x|
-#     x = x.to_s
-#      if x.length == 1
-#        x = "0" + x
-#      end
     print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
-    puts `cat /home/*/var/*/logs/transfer.log | grep -c #{Time_Format("Date")}:#{zeroadder(x)}`
+    count = 0
+    log_files.each_index do |y|
+      open(log_files[y]).each_line do |z|
+        if z.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+          count = count + 1
+        end
+      end
+    end
+    puts count
     x = x.to_i
     x = x.next
    }
@@ -110,9 +160,31 @@ def TopIPBlockHits()
 end
 
 def TopIPHitstoServer()
-   specific = "Is there a specific hour you would like to see: "
-   finals = `cat /home/*/var/*/logs/transfer.log |grep '#{Time_Format("date")}:#{SpecifyTime(specific)}' | cut -d" " -f1 |awk '{print $1}' |sort|uniq -c|sort -nrk1|head -n 20|sed 's/^[[:space:]]*//'`
-   return "\nTop 20 IP hits to server:\n#{finals}"
+  count = 0
+  b = Hash.new(0)
+  values = []
+  vhosts = Dir["/home/*/var/*/logs/transfer.log"]
+  vhosts.each_index do |x|
+    open(vhosts[x]).each_line do |y|
+      if y.include? "#{Time_Format("date")}:"
+        values.push(y)
+      end
+    end
+  end
+  values.each_index do |a|
+    values[a].gsub!(/ .*/,'').strip
+  end
+  values.sort!
+  values.each do |v|
+    b[v] += 1
+  end
+  b = b.sort_by {|key, value| value}.reverse
+  puts "\nTop 20 IP hits to server:\n"
+  b.each_with_index do |(key, value), index|
+    if index < 20
+      puts "#{value} #{key}"
+    end
+  end
 end
 
 def Again()
@@ -184,5 +256,7 @@ def MainMenu()
    CommonLib_Remover()
 end
 
-
+d1 = Common_library_function.new
+d1.common_library_load
+d1.common_library_run
 MainMenu()
