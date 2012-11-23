@@ -169,7 +169,7 @@ def CompareHitsDomain()
    }
 end
 
-def HourPerHourHits()
+=begin def HourPerHourHits()
   mstart = 00
   mstop = Time.new.hour
 
@@ -183,6 +183,27 @@ def HourPerHourHits()
     end
     puts count
   end
+=end
+
+def HourPerHourHits()
+   start = 00
+   stop = Time.now.hour
+   log_files = Dir["/home/*/var/*/logs/transfer.log"]
+
+   start.upto(stop) { |x|
+    print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
+    count = 0
+    log_files.each_index do |y|
+      open(log_files[y]).each_line do |z|
+        if z.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+          count = count + 1
+        end
+      end
+    end
+    puts count
+    x = x.to_i
+    x = x.next
+   }
 end
 
 def TopIPBlockHits()
