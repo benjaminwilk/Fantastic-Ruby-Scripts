@@ -5,6 +5,8 @@
 #Last edit: Conversion of bash commands to ruby
 #!/usr/bin/env ruby
 
+require 'fileutils'
+
 class Common_library_function
   def common_library_exist
     return File.exists?('CommonLib.rb')
@@ -28,6 +30,41 @@ class Common_library_function
 
   def common_library_run
     require './CommonLib.rb'
+  end
+end
+
+class LogConsolidator
+  def vhost_grab
+    return path = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+  end
+
+  def log_file_finder
+    vhosts = Dir["/etc/httpd/conf.d/vhost_*"]
+    Transfers = []
+
+    vhosts.each_index do |x|
+      open(vhosts[x]).each_line do |y|
+        if y.include? "CustomLog"
+          Transfers.push(y)
+        end
+      end
+      Transfers.sort!.uniq!
+      Transfers.each_index do |z|
+        Transfers[z].gsub!("CustomLog ", "")#.strip!
+        Transfers[z].gsub!("combined","")#.gsub!("CustomLog ", "")
+        Transfers[z].strip!
+      end
+    end
+  end
+
+  def log_consolidation
+    Transfers.each_index do |a|
+      open(Transfers[a]).each_line do |z|
+        open(vhost_grab, "a+") do |x|
+          x.puts z
+        end
+      end
+    end
   end
 end
 
@@ -133,24 +170,19 @@ def CompareHitsDomain()
 end
 
 def HourPerHourHits()
-   start = 00
-   stop = Time.now.hour
-   log_files = Dir["/home/*/var/*/logs/transfer.log"]
+  mstart = 00
+  mstop = Time.new.hour
 
-   start.upto(stop) { |x|
-    print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
+  mstart.upto(mstop) do |x|
+    print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
     count = 0
-    log_files.each_index do |y|
-      open(log_files[y]).each_line do |z|
-        if z.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
-          count = count + 1
-        end
+    open(@path).each_line do |y|
+      if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+        count = count + 1
       end
     end
     puts count
-    x = x.to_i
-    x = x.next
-   }
+  end
 end
 
 def TopIPBlockHits()
@@ -234,6 +266,9 @@ def MainMenu()
     if selector == "7"
       puts SpecficIP()
     elsif selector == "3"
+      del = LogConsolidator.new
+      del.log_file_finder
+      del.log_consolidation
       HourPerHourHits()
     elsif selector == "1"
       puts TopIPHitstoServer()
