@@ -61,33 +61,6 @@ def SpecficIP()
   end
 end
 
-def HitsPerMinute()
-  mhour = ''
-  mstart = 00
-  mend = 59
-  specify = "Is there a specific hour you would like to see: "
-  while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
-    mhour = SpecifyTime(specify)
-  end
-
-  mstart.upto(mend) { |x|
-    moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
-    print "Server hits at '#{moment}: "
-    count = 0
-    logs = Dir["/home/*/var/*/logs/transfer.log"]
-    logs.each_index do |y|
-      open(logs[y]).each_line do |z|
-        if z.include? moment
-          count = count + 1
-        end
-      end
-    end
-    puts count
-    x = x.to_i
-    x = x.next
-    }
-end
-
 def CompareHitsDomain()
   domain = ''
    hstart = 00
@@ -194,29 +167,48 @@ def HitsPerHour(path)
   end
 end
 
+def HitsPerMinute(logs)
+  mhour = ''
+  mstart = 00
+  mend = 59
+  specify = "What hour would you would like to see: "
+  while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
+    mhour = SpecifyTime(specify)
+  end
+
+  mstart.upto(mend) { |x|
+    moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
+    print "Server hits at '#{moment}: "
+    count = 0
+    open(logs).each_line do |a|
+        if a.include? moment
+          count = count + 1
+        end
+      end
+    puts count
+    x = x.next
+    }
+end
+
 def TopIPBlockHits()
    specify = "Is there a specific time you would like to see: "
    puts "\nTop 20 IP block hits to server: "
   puts `cat /home/*/var/*/logs/transfer.log | grep '#{Time_Format("Date")}:#{SpecifyTime(specify)}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
-def TopIPHitstoServer()
+def TopIPHitstoServer(vhosts)
   count = 0
   b = Hash.new(0)
   values = []
-  vhosts = Dir["/home/*/var/*/logs/transfer.log"]
-  vhosts.each_index do |x|
-    open(vhosts[x]).each_line do |y|
-      if y.include? "#{Time_Format("date")}:"
-        values.push(y)
-      end
+  open(vhosts).each_line do |y|
+    if y.include? "#{Time_Format("date")}:"
+      values.push(y)
     end
   end
   values.each_index do |a|
     values[a].gsub!(/ .*/,'').strip
   end
-  values.sort!
-  values.each do |v|
+  values.sort!.each do |v|
     b[v] += 1
   end
   b = b.sort_by {|key, value| value}.reverse
@@ -224,6 +216,8 @@ def TopIPHitstoServer()
   b.each_with_index do |(key, value), index|
     if index < 20
       puts "#{value} #{key}"
+    else
+      print ""
     end
   end
 end
