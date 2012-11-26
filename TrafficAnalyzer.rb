@@ -269,19 +269,32 @@ def MainMenu()
     if selector == "7"
       puts SpecficIP()
     elsif selector == "3"
-   	  d1 = TransferLog.new
-	  tmp_file_name = d1.log_name
-	  d1.log_creator(tmp_file_name)
-	  vhosts = d1.vhost_grab
-	  stripped = d1.vhost_stripper(vhosts)
-	  final = d1.placer(stripped, tmp_file_name)
-	  HitsPerHour(tmp_file_name)
+      d1 = TransferLog.new
+      tmp_file_name = d1.log_name
+      d1.log_creator(tmp_file_name)
+      vhosts = d1.vhost_grab
+      stripped = d1.vhost_stripper(vhosts)
+      final = d1.placer(stripped, tmp_file_name)
+      HitsPerHour(tmp_file_name)
     elsif selector == "1"
-      puts TopIPHitstoServer()
+      d1 = TransferLog.new
+      tmp_file_name = d1.log_name
+      d1.log_creator(tmp_file_name)
+      vhosts = d1.vhost_grab
+      stripped = d1.vhost_stripper(vhosts)
+      final = d1.placer(stripped, tmp_file_name)
+      TopIPHitstoServer(tmp_file_name)
     elsif selector == "2"
       TopIPBlockHits()
     elsif selector == "4"
-      HitsPerMinute()
+      d1 = TransferLog.new
+      tmp_file_name = d1.log_name
+      d1.log_creator(tmp_file_name)
+      vhosts = d1.vhost_grab
+      stripped = d1.vhost_stripper(vhosts)
+      final = d1.placer(stripped, tmp_file_name)
+      TopIPHitstoServer(tmp_file_name)
+      HitsPerMinute(tmp_file_name)
     elsif selector == "6"
       TopHitsPerDomain()
     elsif selector == "5"
