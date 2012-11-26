@@ -217,7 +217,8 @@ def TopIPHitstoServer(vhosts)
     if index < 20
       puts "#{value} #{key}"
     else
-      print ""
+      break
+#      print ""
     end
   end
 end
@@ -293,7 +294,6 @@ def MainMenu()
       vhosts = d1.vhost_grab
       stripped = d1.vhost_stripper(vhosts)
       final = d1.placer(stripped, tmp_file_name)
-      TopIPHitstoServer(tmp_file_name)
       HitsPerMinute(tmp_file_name)
     elsif selector == "6"
       TopHitsPerDomain()
