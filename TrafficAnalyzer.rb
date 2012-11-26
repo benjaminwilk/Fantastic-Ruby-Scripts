@@ -3,7 +3,6 @@
 #Version 1.75
 #Last edited: November 21, 2012
 #Last edit: Conversion of bash commands to ruby
-#!/usr/bin/env ruby
 
 require 'fileutils'
 
@@ -265,43 +264,32 @@ def MainMenu()
    loop = Loop_Function.new
    loop.Menu_Loop(menus) 
    print "Your selection: "
-   selector = gets.strip
-   #timer = Timedisplay.new
-    if selector == "7"
+   selector = gets.strip.to_i
+    if selector == 0
+      d1 = TransferLog.new
+      tmp_file_name = d1.log_name
+      d1.log_creator(tmp_file_name)
+      vhosts = d1.vhost_grab
+      stripped = d1.vhost_stripper(vhosts)
+      final = d1.placer(stripped, tmp_file_name)
+    end
+    if selector == 7
       puts SpecficIP()
-    elsif selector == "3"
-      d1 = TransferLog.new
-      tmp_file_name = d1.log_name
-      d1.log_creator(tmp_file_name)
-      vhosts = d1.vhost_grab
-      stripped = d1.vhost_stripper(vhosts)
-      final = d1.placer(stripped, tmp_file_name)
+    elsif selector == 3
       HitsPerHour(tmp_file_name)
-    elsif selector == "1"
-      d1 = TransferLog.new
-      tmp_file_name = d1.log_name
-      d1.log_creator(tmp_file_name)
-      vhosts = d1.vhost_grab
-      stripped = d1.vhost_stripper(vhosts)
-      final = d1.placer(stripped, tmp_file_name)
+    elsif selector == 1
       TopIPHitstoServer(tmp_file_name)
-    elsif selector == "2"
+    elsif selector == 2
       TopIPBlockHits()
-    elsif selector == "4"
-      d1 = TransferLog.new
-      tmp_file_name = d1.log_name
-      d1.log_creator(tmp_file_name)
-      vhosts = d1.vhost_grab
-      stripped = d1.vhost_stripper(vhosts)
-      final = d1.placer(stripped, tmp_file_name)
+    elsif selector == 4
       HitsPerMinute(tmp_file_name)
-    elsif selector == "6"
+    elsif selector == 6
       TopHitsPerDomain()
-    elsif selector == "5"
+    elsif selector == 5
       CompareHitsDomain()
-    elsif selector == "8"
+    elsif selector == 8
       puts IPLocationFinder()
-    elsif selector == "0"
+    elsif selector == 0
       abort("\nGoodbye")
     else 
       MainMenu()
