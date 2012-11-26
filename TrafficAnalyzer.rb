@@ -1,8 +1,8 @@
-#!/usr/bin/env ruby
 #TrafficAnalyzer.rb - A fork of the original, less bad
 #Version 1.75
 #Last edited: November 21, 2012
 #Last edit: Conversion of bash commands to ruby
+#!/usr/bin/env ruby
 
 require 'fileutils'
 
@@ -150,10 +150,8 @@ end
 
 
 def HitsPerHour(path)
-  puts path
   mstart = 00
   mstop = Time.new.hour
-
   mstart.upto(mstop) do |x|
     print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
     count = 0
@@ -174,7 +172,6 @@ def HitsPerMinute(logs)
   while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
     mhour = SpecifyTime(specify)
   end
-
   mstart.upto(mend) { |x|
     moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
     print "Server hits at '#{moment}: "
@@ -265,13 +262,13 @@ def MainMenu()
    loop.Menu_Loop(menus) 
    print "Your selection: "
    selector = gets.strip.to_i
-    if selector == 0
-      d1 = TransferLog.new
-      tmp_file_name = d1.log_name
-      d1.log_creator(tmp_file_name)
-      vhosts = d1.vhost_grab
-      stripped = d1.vhost_stripper(vhosts)
-      final = d1.placer(stripped, tmp_file_name)
+   if selector != 0
+     d1 = TransferLog.new
+     tmp_file_name = d1.log_name
+     d1.log_creator(tmp_file_name)
+     vhosts = d1.vhost_grab
+     stripped = d1.vhost_stripper(vhosts)
+     final = d1.placer(stripped, tmp_file_name)
     end
     if selector == 7
       puts SpecficIP()
