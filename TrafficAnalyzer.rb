@@ -33,41 +33,6 @@ class Common_library_function
   end
 end
 
-class LogConsolidator
-  def vhost_grab
-    return path = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
-  end
-
-  def log_file_finder
-    vhosts = Dir["/etc/httpd/conf.d/vhost_*"]
-    Transfers = []
-
-    vhosts.each_index do |x|
-      open(vhosts[x]).each_line do |y|
-        if y.include? "CustomLog"
-          Transfers.push(y)
-        end
-      end
-      Transfers.sort!.uniq!
-      Transfers.each_index do |z|
-        Transfers[z].gsub!("CustomLog ", "")#.strip!
-        Transfers[z].gsub!("combined","")#.gsub!("CustomLog ", "")
-        Transfers[z].strip!
-      end
-    end
-  end
-
-  def log_consolidation
-    Transfers.each_index do |a|
-      open(Transfers[a]).each_line do |z|
-        open(vhost_grab, "a+") do |x|
-          x.puts z
-        end
-      end
-    end
-  end
-end
-
 def SpecficIP()
   ipfinder = []
   b = Hash.new(0)
@@ -169,41 +134,64 @@ def CompareHitsDomain()
    }
 end
 
-=begin def HourPerHourHits()
+class TransferLog
+  def log_name 
+    return path = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+  end
+
+  def log_creator(file_name)
+    FileUtils.touch(file_name)
+  end
+
+  def vhost_grab
+    return vhosts = Dir["/etc/httpd/conf.d/vhost_*"]
+  end
+
+  def vhost_stripper(vhosts)
+    transfers = []
+    vhosts.each_index do |x|
+      open(vhosts[x]).each_line do |y|
+        if y.include? "CustomLog"
+          transfers.push(y)
+        end
+      end
+    transfers.sort!.uniq!
+    transfers.each_index do |z|
+      transfers[z].gsub!("CustomLog ", "")#.strip!
+      transfers[z].gsub!("combined","")#.gsub!("CustomLog ", "")
+      transfers[z].strip!
+    end
+  end
+  return transfers
+ end
+
+  def placer(transfers, path)
+    transfers.each_index do |a|
+      open(transfers[a]).each_line do |z|
+        open(path, "a+") do |x|
+          x.puts z
+        end
+      end
+    end
+  end
+end
+
+
+def HitsPerHour(path)
+  puts path
   mstart = 00
   mstop = Time.new.hour
 
   mstart.upto(mstop) do |x|
     print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
     count = 0
-    open(@path).each_line do |y|
+    open(path).each_line do |y|
       if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
         count = count + 1
       end
     end
     puts count
   end
-=end
-
-def HourPerHourHits()
-   start = 00
-   stop = Time.now.hour
-   log_files = Dir["/home/*/var/*/logs/transfer.log"]
-
-   start.upto(stop) { |x|
-    print "Visitor hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 :"
-    count = 0
-    log_files.each_index do |y|
-      open(log_files[y]).each_line do |z|
-        if z.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
-          count = count + 1
-        end
-      end
-    end
-    puts count
-    x = x.to_i
-    x = x.next
-   }
 end
 
 def TopIPBlockHits()
@@ -287,10 +275,13 @@ def MainMenu()
     if selector == "7"
       puts SpecficIP()
     elsif selector == "3"
-      del = LogConsolidator.new
-      del.log_file_finder
-      del.log_consolidation
-      HourPerHourHits()
+   	  d1 = TransferLog.new
+	  tmp_file_name = d1.log_name
+	  d1.log_creator(tmp_file_name)
+	  vhosts = d1.vhost_grab
+	  stripped = d1.vhost_stripper(vhosts)
+	  final = d1.placer(stripped, tmp_file_name)
+	  HitsPerHour(tmp_file_name)
     elsif selector == "1"
       puts TopIPHitstoServer()
     elsif selector == "2"
