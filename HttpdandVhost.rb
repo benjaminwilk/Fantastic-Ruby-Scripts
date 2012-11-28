@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 #Automator for vhost and httpd.conf file
-#Version 2.5
-#Last Revision: Nov 16, 2012 
+#Last Revision: Nov 28, 2012
 
 require "fileutils"
-require "optparse"
+#require "optparse"
 
 #Options = {}
 #opts = OptionParse.new
@@ -13,18 +12,17 @@ require "optparse"
 
 #opts.parse!
 
-class Support_functions
+class SupportFunctions
   def user_check
-    rootchecker = `whoami`.strip
-    if rootchecker != "root"
+    if rootchecker = ENV['USER'] != "root"
       abort("\nThis script requires root access.  \n\nAre you root?\n\n")
     end
   end
   
   def change_report 
     puts "\n\nChecking for changes on the server...\n\n"
-    puts "Checking for dummy Vhost file         [#{Vhost_functions.new.vhost_search}] "
-    puts "Checking for httpd.conf file changes  [#{Http_functions.new.http_search}] "
+    puts "Checking for dummy Vhost file         [#{VhostFunctions.new.search}] "
+    puts "Checking for httpd.conf file changes  [#{HttpFunctions.new.search}] "
   end
 
   def server_status 
@@ -46,18 +44,18 @@ class Support_functions
     choice_display(selection)
     choice = gets.strip
     if choice == '1'
-      vhost = Vhost_functions.new
-      vhost.vhost_creator
+      vhost = VhostFunctions.new
+      vhost.creator
     elsif choice == '2'
-      httpd = Http_functions.new
-      httpd.http_change
+      httpd = HttpFunctions.new
+      httpd.change
     elsif choice == '3'
-      vhost = Vhost_functions.new
-      vhost.vhost_creator
-      httpd = Http_functions.new
-      httpd.http_change
+      vhost = VhostFunctions.new
+      vhost.creator
+      httpd = HttpFunctions.new
+      httpd.change
     elsif choice == '4'
-      abort("\nGoodbye.\n")
+      abort("\nGoodbye\n")
     else 
       puts "Please enter an appropriate number.\n"
       Chooser()
@@ -65,82 +63,85 @@ class Support_functions
   end
 
   def server_name
-    serName = `uname -n`
-    return serName
+    serName = ENV['HOSTNAME']
   end
 
   def ip_return
     ipaddress = `ifconfig | head -n10 | awk '/inet addr:*/ {print $2}'| awk -F':' '{print $2}'`.strip
-    return ipaddress
   end
 
   def server_load
     load = `cat /proc/loadavg | awk '{print $1" "$2" "$3}'`
-    return load
   end
 end
 
-class Vhost_functions
-  def vhost_search
+class VhostFunctions
+  def search
     vhost = `find /etc/httpd/conf.d/ -name "vhost_0000*"`
     if vhost.empty? != false
       return "Not Installed"
     end
     if File.readlines("/etc/httpd/conf.d/vhost_0000_defaults.conf").grep(/DirectoryIndex index.html/).any? == false
-      return "  Old File   "
+      "  Old File   "
     else 
-      return "  Installed  "
+      "  Installed  "
     end
   end
 
-  def vhost_creator
+  def creator
     puts "\nCreating default vhost file..."
     vhost = "/etc/httpd/conf.d/vhost_0000_defaults.conf"
-    vhostfind = vhost_search.strip 
+    vhostfind = search.strip 
     if vhostfind == "Old File"
       `rm -rf /etc/httpd/conf.d/vhost_0000_defaults.conf`
     end
-    #`wget -q http://goo.gl/grvPn; chmod a+x vhost.txt`
     `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/vhost.txt > vhost.txt`
     vhostcopy = "vhost.txt"
 
     FileUtils.touch(vhost)
 
-    text = File.read(vhostcopy).gsub("<IP>","#{Support_functions.new.ip_return}")
+    text = File.read(vhostcopy).gsub("<IP>","#{SupportFunctions.new.ip_return}")
     File.open(vhost, "w").write(text)
   end
 end
 
-class Http_functions
-  def http_restart
+class HttpFunctions
+  def restart
     puts "Restarting HTTP..."
     `service httpd restart`
   end
 
-  def http_search
+  def search
     if File.readlines("/etc/httpd/conf/httpd.conf").grep(/KeepAliveTimeout.15/).any? == true
-      return " Incomplete  " 
+      " Incomplete  " 
     else
-      return "  Complete   "
+      "  Complete   "
     end
   end
 
-  def http_change
+  def change
     master = "/etc/httpd/conf/httpd.conf" 
     puts "Making some changes to the httpd.conf file..."
     text = File.read(master)
-      replace = text.gsub(/^KeepAliveTimeout .*$/, "KeepAliveTimeout 3")
-      replace = replace.gsub(/^MaxClients.*$/, "MaxClients\t     160")
-     File.open(master, "w") {|file| file.puts replace }
+    replace = text.gsub(/^KeepAliveTimeout .*$/, "KeepAliveTimeout 3")
+    replace = replace.gsub(/^MaxClients.*$/, "MaxClients\t     160")
+    File.open(master, "w") {|file| file.puts replace }
+  end
+  
+  def template_removal
+    if File.exist?("vhost.txt")
+      FileUtils.rm("vhost.txt")
+    end
   end
 end
 
 
-support =  Support_functions.new
+support =  SupportFunctions.new
 support.user_check
 support.server_status
 support.change_report
 support.main_menu
-Http_functions.new.http_restart
-`rm -rf vhost.txt`
+apache = HttpFunctions.new
+apache.restart
+apache.template_removal
 abort("\nAll done\n")
