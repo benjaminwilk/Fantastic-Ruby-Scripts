@@ -6,39 +6,30 @@ Last Revision: Nov 26, 2012
 
 class DomainCheck
   def vhost_grab
-    vhosts = []
-    Dir["/etc/httpd/conf.d/vhost_*"].each do |d|
+    vhost_path = Dir["/etc/httpd/conf.d/vhost_*"].each do |d|
       if d.include? "000"
         print ""
-      else
-        vhosts.push(d)
       end
-    end 
-    return vhosts
+    end
   end
 
   def ip_address(vhosts)
-    value = []
-    vhosts.each_index do |x|
-      value[x] = open(vhosts[x]).grep(/<VirtualHost .*:80>/).to_s.gsub!(/:80>/,"").gsub!(/<VirtualHost/, "")
+    vhosts.map! do |x|
+       x = open(x).grep(/<VirtualHost .*:80>/).to_s.gsub!(/:80>/,"").gsub!(/<VirtualHost/, "")
     end
-    value 
   end
 
   def vhost_shortener(long_vhost)
-    stripped_vhosts = []
-    long_vhost.each_index do |x|
-      stripped_vhosts[x] = long_vhost[x].gsub("/etc/httpd/conf.d/vhost_", '').gsub(".conf",'')
+    long_vhost.map! do |x|
+      x.gsub("/etc/httpd/conf.d/vhost_", '').gsub(".conf",'')
     end
-    stripped_vhosts
   end
 
   def domain_display(final_vhost, display_ip)
     puts "\n%s %40s %41s" %["Domain name", "IP Address Listed", "IP Address Currently in Use"]
     display_ip.each_index do |x|
-      padding = 49
-      padding = padding.to_i - final_vhost[x].strip.length
-      print "%s %#{padding}s %35s" %[final_vhost[x], display_ip[x].strip, `dig #{final_vhost[x].strip} +short`.strip]
+      padding = 49 - final_vhost[x].strip.length
+      print "%s %#{padding}s %35s" %[final_vhost[x], display_ip[x].strip, `dig #{final_vhost[x]} +short`.strip]
       puts "\n"
     end
   end
