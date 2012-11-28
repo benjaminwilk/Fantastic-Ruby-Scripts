@@ -1,25 +1,22 @@
 #!/usr/bin/env ruby
 #Changes Epoch time in .bash_history to something readable
-#Last Change: November 6, 2012
-#Last Edit: Added Commonlib Functionality, made the log naming scheme easier, removed a lambda
+#Last Change: November 28, 2012
 
 require "fileutils"
 require "date"
 require "optparse"
 
-class Common_library_function
-  def common_library_exist
+class LibraryLoader
+  def exist
     return File.exists?('CommonLib.rb')
   end
-
-  def common_library_version
+  def version_check
     return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
   end
-
-  def common_library_load
-    if Common_library_function.new.common_library_exist == true
+  def load
+    if exist == true
       running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != Common_library_function.new.common_library_version
+      if running_version != version_check
         `rm -rf /home/nex*/CommonLib.rb `
         `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
       end
@@ -27,8 +24,7 @@ class Common_library_function
       `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
     end
   end
-
-  def common_library_run
+  def run
     require './CommonLib.rb'
   end
 end
@@ -38,7 +34,6 @@ options ={}
 opts.on("-n username", "--name username", String, "Name of user")do
    |n| @username = n
    end
-
 opts.parse!(ARGV)
 
 AddUp = lambda {|numb|
@@ -46,44 +41,39 @@ AddUp = lambda {|numb|
   return value.strftime("%m\\%d\\%y - %H:%M:%S")
 }
 
-class Epoch_function
-  def epoch_entry
+class EpochFunction
+  def user_entry
     arg_value = @username
     if arg_value.nil? == true
       print "\nPress 1 to view available bash histories; 0 to quit \nEnter the user you want to see the bash history to: "
-      @@name = gets.strip.downcase
-
-      if @@name == "1"
-        puts `\nls /home/*/.bash_history`.strip.split(' ')
-        puts "\n"
-        epoch_entry
-      elsif @@name == "0"
+      name = gets.strip.downcase
+      if name == "1"
+        puts Dir["/home/*/.bash_history"]
+        user_entry
+      elsif name == "0"
         abort("Goodbye")
       end
-
     else
-      @@name = arg_value.strip.downcase
+      name = arg_value.strip.downcase
     end
+    name
   end
 
-  def epoch_search
-      @bash =  "/home/#{@@name}/.bash_history".strip
-
-    if File.exists?(@bash) == false
+  def search(name_value)
+    bash =  "/home/#{name_value}/.bash_history".strip
+    if File.exists?(bash) == false
       abort("Sorry, that directory doesn't exist.")
     end
+    bash
   end
 
-  def epoch_writer
-    #newcopy = Date_time.call(name)
-    log_type = "#{@@name}"
-    newcopy = Log_File_Creator(log_type)
-
-    FileUtils.cp @bash, newcopy
+  def writer(bash_path, name_value)
+    newcopy = Log_File_Creator(name_value)
+    FileUtils.cp bash_path, newcopy
 
     puts "Writing..."
     File.open(newcopy, "w") do  |output|
-      File.open(@bash).each do |line|
+      File.open(bash_path).each do |line|
         if line[/#.*$/]
           final  =  line.gsub(/#/, "").strip.to_i
           final = AddUp.call(final)
@@ -97,10 +87,10 @@ class Epoch_function
   end
 end
 
-d1 = Common_library_function.new
-d1.common_library_load
-d1.common_library_run
-epoch = Epoch_function.new
-epoch.epoch_entry
-epoch.epoch_search
-epoch.epoch_writer
+d1 = LibraryLoader.new
+d1.load
+d1.run
+epoch = EpochFunction.new
+name_value = epoch.user_entry
+bash_path = epoch.search(name_value)
+epoch.writer(bash_path, name_value)
