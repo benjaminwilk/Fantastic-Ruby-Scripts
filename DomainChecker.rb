@@ -25,11 +25,18 @@ class DomainCheck
     end
   end
 
-  def domain_display(final_vhost, display_ip)
+  def formatted_header
     puts "\n%s %40s %41s" %["Domain name", "IP Address Listed", "IP Address Currently in Use"]
+  end
+
+  def padding_for(final_vhost)
+    49 - final_vhost[x].strip.length
+  end
+
+  def domain_display(final_vhost, display_ip)
     display_ip.each_index do |x|
       padding = 49 - final_vhost[x].strip.length
-      print "%s %#{padding}s %35s" %[final_vhost[x], display_ip[x].strip, `dig #{final_vhost[x]} +short`.strip]
+      print "%s %#{padding_for(final_vhost)}s %35s" %[final_vhost[x], display_ip[x].strip, `dig #{final_vhost[x]} +short`.strip]
       puts "\n"
     end
   end
@@ -38,4 +45,5 @@ end
 d1 = DomainCheck.new
 display_ip = d1.ip_address(d1.vhost_grab)
 final_vhost = d1.vhost_shortener(d1.vhost_grab)
+d1.formatted_header
 d1.domain_display(final_vhost, display_ip)
