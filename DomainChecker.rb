@@ -8,7 +8,7 @@ class DomainCheck
   def vhost_grab
     vhost_path = Dir["/etc/httpd/conf.d/vhost_*"].each do |d|
       if d.include? "000"
-        print ""
+        vhost_path.delete(d)
       end
     end
   end
