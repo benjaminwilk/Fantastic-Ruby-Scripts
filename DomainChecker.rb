@@ -6,10 +6,12 @@ Last Revision: Nov 26, 2012
 
 class DomainCheck
   def vhost_grab
-    vhost_path = Dir["/etc/httpd/conf.d/vhost_*"].each do |d|
+    vhost_path = Dir["/etc/httpd/conf.d/vhost_*"]
+    vhost_path.each do |d|
       if d.include? "000"
         vhost_path.delete(d)
       end
+#      puts d
     end
   end
 
@@ -30,14 +32,16 @@ class DomainCheck
   end
 
   def padding_for(final_vhost)
-    49 - final_vhost[x].strip.length
+#    puts *final_vhost.to_s.length
+    final_vhost.to_s.length
   end
 
   def domain_display(final_vhost, display_ip)
     display_ip.each_index do |x|
       padding = 49 - final_vhost[x].strip.length
-      print "%s %#{padding_for(final_vhost)}s %35s" %[final_vhost[x], display_ip[x].strip, `dig #{final_vhost[x]} +short`.strip]
-      puts "\n"
+      print "%s" %[final_vhost[x]]
+      print "%#{padding}s" %[display_ip[x].strip]
+      puts "%35s" %[`dig #{final_vhost[x]} +short`.strip]
     end
   end
 end
