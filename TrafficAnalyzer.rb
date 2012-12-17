@@ -1,31 +1,33 @@
-#TrafficAnalyzer.rb - A fork of the original, less bad
-#Version 1.75
-#Last edited: November 21, 2012
-#Last edit: Conversion of bash commands to ruby
 #!/usr/bin/env ruby
+#TrafficAnalyzer.rb
+#Version 1.75
+#Last edited: December 14, 2012
+#Last edit: Conversion of bash commands to ruby
 
 require 'fileutils'
 
-class Common_library_function
-  def common_library_exist
+class LibraryLoader
+  def exist
     return File.exists?('CommonLib.rb')
-  end
-
-  def common_library_version
+  end 
+  def version_check
     return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
-  end
-
-  def common_library_load
-    if Common_library_function.new.common_library_exist == true
+  end 
+  def load
+    if exist == true
       running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != Common_library_function.new.common_library_version
+      if running_version != version_check
         `rm -rf /home/nex*/CommonLib.rb `
         `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-      end
+      end 
     else
       `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-    end
-  end
+    end 
+  end 
+  def run 
+    require './CommonLib.rb'
+  end 
+end
 
   def common_library_run
     require './CommonLib.rb'
@@ -116,7 +118,7 @@ class TransferLog
   end
 
   def vhost_grab
-    return vhosts = Dir["/etc/httpd/conf.d/vhost_*"]
+    vhosts = Dir["/etc/httpd/conf.d/vhost_*"]
   end
 
   def vhost_stripper(vhosts)
@@ -148,42 +150,43 @@ class TransferLog
   end
 end
 
-
-def HitsPerHour(path)
-  mstart = 00
-  mstop = Time.new.hour
-  mstart.upto(mstop) do |x|
-    print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
-    count = 0
-    open(path).each_line do |y|
-      if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
-        count = count + 1
+class HitsPerTime
+  def HitsPerHour(path)
+    mstart = 00
+    mstop = Time.new.hour
+    mstart.upto(mstop) do |x|
+      print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
+      count = 0
+      open(path).each_line do |y|
+        if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
+          count = count + 1
+        end
       end
+      puts count
     end
-    puts count
   end
-end
 
-def HitsPerMinute(logs)
-  mhour = ''
-  mstart = 00
-  mend = 59
-  specify = "What hour would you would like to see: "
-  while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
-    mhour = SpecifyTime(specify)
-  end
-  mstart.upto(mend) { |x|
-    moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
-    print "Server hits at '#{moment}: "
-    count = 0
-    open(logs).each_line do |a|
+  def HitsPerMinute(logs)
+    mhour = ''
+    mstart = 00
+    mend = 59
+    specify = "What hour would you would like to see: "
+    while mhour == '' or mhour >= '24' or mhour == '\n' or (mhour =~ /[a-z]|[A-Z].*/) do
+      mhour = SpecifyTime(specify)
+    end
+    mstart.upto(mend) { |x|
+      moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
+      print "Server hits at '#{moment}: "
+      count = 0
+      open(logs).each_line do |a|
         if a.include? moment
           count = count + 1
         end
       end
-    puts count
-    x = x.next
+      puts count
+      x = x.next
     }
+  end
 end
 
 def TopIPBlockHits()
@@ -219,17 +222,21 @@ def TopIPHitstoServer(vhosts)
   end
 end
 
-def Again()
-  print "\nWould you like to check more statistics (Y/N): "
-  choice = gets.strip.upcase
-  if choice == "Y"
-    MainMenu()
-  elsif choice =="N"
-    abort("\nGoodbye")
-  else
-    Again()
+class Shutdown
+  def Again
+    print "\nWould you like to check more statistics (Y/N): "
+    choice = gets.strip.upcase
+    if choice == "Y"
+      MainMenu()
+    elsif choice =="N"
+      abort("\nGoodbye")
+    else
+      Again()
+    end
   end
-end
+
+  def Deletion
+    Dir["CommonLib.rb]
 
 def TopHitsPerDomain()
   print "Specific hour (keep blank for entire day): "
@@ -273,13 +280,13 @@ def MainMenu()
     if selector == 7
       puts SpecficIP()
     elsif selector == 3
-      HitsPerHour(tmp_file_name)
+      HitsPerTime.new.HitsPerHour(tmp_file_name)
     elsif selector == 1
       TopIPHitstoServer(tmp_file_name)
     elsif selector == 2
       TopIPBlockHits()
     elsif selector == 4
-      HitsPerMinute(tmp_file_name)
+      HitsPerTime.new.HitsPerMinute(tmp_file_name)
     elsif selector == 6
       TopHitsPerDomain()
     elsif selector == 5
@@ -288,6 +295,8 @@ def MainMenu()
       puts IPLocationFinder()
     elsif selector == 0
       abort("\nGoodbye")
+    elsif selector.class? != integer
+      raise TypeError, "Somehow this isn't an integer."
     else 
       MainMenu()
     end
@@ -295,7 +304,7 @@ def MainMenu()
    CommonLib_Remover()
 end
 
-d1 = Common_library_function.new
-d1.common_library_load
-d1.common_library_run
+d1 = LibraryLoader.new
+d1.load
+d1.run
 MainMenu()
