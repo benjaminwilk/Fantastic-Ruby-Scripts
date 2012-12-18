@@ -27,7 +27,6 @@ class LibraryLoader
   def run 
     require './CommonLib.rb'
   end 
-end
 
   def common_library_run
     require './CommonLib.rb'
@@ -69,8 +68,8 @@ def CompareHitsDomain()
    transfer_log = ''
    log_files = Dir["/home/*/var/*/logs/transfer.log"]
    while domain == '\n' or domain == '' do
-   print "Specific domain to check (keep blank to quit): "
-   domain = gets.strip.downcase
+     print "Specific domain to check (keep blank to quit): "
+     domain = gets.strip.downcase
      if domain == '\n' or domain == ''
        MainMenu()
      end
@@ -223,9 +222,14 @@ def TopIPHitstoServer(vhosts)
 end
 
 class Shutdown
-  def Again
+  def Again()
+   # choice = ""
     print "\nWould you like to check more statistics (Y/N): "
     choice = gets.strip.upcase
+    #while choice == "Y" or choice == "N" or choice == "" do
+    #  print "\nWould you like to check more statistics (Y/N): "
+    #  choice = gets.strip.upcase
+    #end
     if choice == "Y"
       MainMenu()
     elsif choice =="N"
@@ -236,7 +240,9 @@ class Shutdown
   end
 
   def Deletion
-    Dir["CommonLib.rb]
+    Dir["CommonLib.rb"]
+  end
+end
 
 def TopHitsPerDomain()
   print "Specific hour (keep blank for entire day): "
@@ -300,7 +306,7 @@ def MainMenu()
     else 
       MainMenu()
     end
-   Again()
+   Shutdown.new.Again
    CommonLib_Remover()
 end
 
