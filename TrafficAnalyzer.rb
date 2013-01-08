@@ -36,7 +36,8 @@ end
 def SpecficIP()
   ipfinder = []
   b = Hash.new(0)
-  ipcheck = gets.strip
+  print "Enter the IP address you're interested in checking: "
+  ipcheck = gets.strip.to_i
   directories = Dir["/home/*/var/*/logs/transfer.log"]
   directories.each_index do |x|
     open(directories[x]).each_line do |y|
@@ -268,6 +269,10 @@ def TopHitsPerDomain()
   }
 end
 
+def DotFunction()
+  print "."
+end
+
 def MainMenu()
    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
    puts "\nWhat analytics would you like to see: "
@@ -276,15 +281,22 @@ def MainMenu()
    print "Your selection: "
    selector = gets.strip.to_i
    if selector != 0
+     print "Compiling Real-time Logs"
      d1 = TransferLog.new
+     DotFunction()
      tmp_file_name = d1.log_name
+     DotFunction()
      d1.log_creator(tmp_file_name)
+     DotFunction()
      vhosts = d1.vhost_grab
+     DotFunction()
      stripped = d1.vhost_stripper(vhosts)
+     DotFunction()
      final = d1.placer(stripped, tmp_file_name)
+     puts " Done!"
     end
     if selector == 7
-      puts SpecficIP()
+      SpecficIP()
     elsif selector == 3
       HitsPerTime.new.HitsPerHour(tmp_file_name)
     elsif selector == 1
