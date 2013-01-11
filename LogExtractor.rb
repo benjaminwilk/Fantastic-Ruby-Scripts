@@ -1,22 +1,33 @@
+#!/usr/bin/env ruby
 #Old log Extractor - Finds logs on server, and extracts their transfer.log files into main file
 #Version 0.7
 #Last edited: October 4, 2012
-#!/usr/bin/env ruby
 
-commonlib_version = "0.651"
-common_locator = `ls ~/CommonLib.rb`.strip
-  if common_locator.empty? == true
-     `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+class LibraryLoader
+  def exist
+    return File.exists?('CommonLib.rb')
   end
-running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-  if running_version != commonlib_version
-     puts "Looks like you're using an out of date version of Commonlib..."
-     `rm -rf /home/nex*/CommonLib.rb `
-     `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-   else #running_version == commonlib_version
-    puts  "You are running #{running_version}"
+  def version_check
+    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
   end
-require './CommonLib.rb'
+  def load
+    if exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != version_check
+        `rm -rf /home/nex*/CommonLib.rb `
+        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+      end
+    else
+      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    end
+  end
+  def run
+    require './CommonLib.rb'
+  end
+end
+
+require 'date'
+require 'fileutils'
 
 def LogGrab()
   print "\nEnter the date you're looking for (Month/Day): "
@@ -121,18 +132,13 @@ def Evidence(grepdate)
   end
 end
 
-def IPLocationFinder()
- print "\nEnter IP to look up: "
- location = gets.strip
- return `lynx -dump -nolist geoiptool.com/en/?IP=#{location} | egrep -i 'Host Name|IP Address|Country|Region|City|Postal|Longit|Lat'`
-end
-
 def Menu()
   grepdate = LogGrab()
   begin
    reversal = ["Top IP hits to server", "Top IP block hits to server", "Hourly server hits", "IP Location"]
    puts "\nWhat would you like to do: \n"
-   LoopFunction(reversal)
+   looper = Loop_Function.new
+   looper.Menu_Loop(reversal)
    print "\nYour choice: "
    menuchoice = gets.strip
    if menuchoice == "1"
@@ -150,8 +156,11 @@ def Menu()
    end 
   end while RunAgain() == "Y"
    Evidence(grepdate)
-   SelfDestruct()
+#   SelfDestruct()
 #   exit 1
 end    
 
+d1 = LibraryLoader.new
+d1.load
+d1.run
 Menu()

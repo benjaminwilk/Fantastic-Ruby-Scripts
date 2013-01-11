@@ -1,6 +1,6 @@
-#COMMONLIB VERSION 0.651
-#Change date: Oct 11, 2012
-#Last edit: Cleaned up my functions and variable names
+#COMMONLIB VERSION 0.67
+#Change date: January 11, 2013
+#Last edit: Last geoip site stopped working, updated that, and updating other various functions
 
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
 class Loop_Function
@@ -81,14 +81,18 @@ end
 
 #User input IP, returns to function
  def IPcheck()
-   print "What IP address would you like to check: "
+   print "What IP address would you like to check (keep blank to go back): "
    return ipaddy = gets.strip
  end
 
 #Runs IP address through geoiptool which will show location of IP
  def IPLocationFinder()
-  return `lynx -dump -nolist geoiptool.com/en/?IP=#{IPcheck()} | egrep -i 'Host Name|IP Address|Country|Region|City|Postal|Longit|Lat'`
+  ipcheck = IPcheck()
+  if ipcheck.empty? == true
+  return `lynx -dump -nolist http://whatismyipaddress.com/ip/#{IPcheck()} | egrep -i 'IP:|Hostname|ISP|Organization|Country|State|City|Latitude|Longitude|Areacode'`
+  end
  end
+
 
 #Removes commonlib library at the end of the script
  def CommonLib_Remover()
