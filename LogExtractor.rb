@@ -48,7 +48,7 @@ def LogGrab()
 
 #  dayafter = `find /home/*/var/*/logs/transfer.log-#{date}.zip`.split("\n")
 #  daybeforelogs = `find /home/*/var/*/logs/transfer.log-#{daybefore}.zip`.split("\n")
-puts logs = `find /home/*/var/*/logs/transfer.log-#{dayafter}.zip && find find /home/*/var/*/logs/transfer.log-#{date}.zip`.split("\n")
+   logs = `find /home/*/var/*/logs/transfer.log-#{dayafter}.zip && find find /home/*/var/*/logs/transfer.log-#{date}.zip`.split("\n")
 #  logs = dayafter.zip(daybeforelogs).flatten
 
   if logs.empty? == true
