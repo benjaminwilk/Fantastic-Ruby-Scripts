@@ -1,4 +1,4 @@
-#COMMONLIB VERSION 0.67
+#COMMONLIB VERSION 0.70
 #Change date: January 11, 2013
 #Last edit: Last geoip site stopped working, updated that, and updating other various functions
 
@@ -81,7 +81,7 @@ end
 
 #User input IP, returns to function
  def IPcheck()
-   print "What IP address would you like to check (keep blank to go back): "
+   print "What IP address or domain would you like to check (keep blank to go back): "
    return ipaddy = gets.strip
  end
 
@@ -89,7 +89,7 @@ end
  def IPLocationFinder()
   ipcheck = IPcheck()
   if ipcheck.empty? == true
-  return `lynx -dump -nolist http://whatismyipaddress.com/ip/#{IPcheck()} | egrep -i 'IP:|Hostname|ISP|Organization|Country|State|City|Latitude|Longitude|Areacode'`
+    return `whois #{IPcheck}`
   end
  end
 
