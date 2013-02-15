@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 #TrafficAnalyzer.rb
-#Version 1.75
-#Last edited: December 14, 2012
-#Last edit: Conversion of bash commands to ruby
+#Version 1.95
+#Last edited: Feb 15, 2013
+#Last edit: Speeding up log compilation
 
 require 'fileutils'
 
@@ -167,6 +167,7 @@ class HitsPerTime
   end
 
   def HitsPerMinute(logs)
+    puts logs
     mhour = ''
     mstart = 00
     mend = 59
@@ -273,14 +274,28 @@ def DotFunction()
   print "."
 end
 
+
+#class Compiler
+#  scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+#  attr_reader :scriptstart
+  #attr_writer :scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+#    scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+#  attr_accessor :runtimecount
+#    runtimecount = 0
+#end
+
+   @runtimecount = 0
+
+
 def MainMenu()
+   #print Compiler.scriptstart
    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
    puts "\nWhat analytics would you like to see: "
    loop = Loop_Function.new
    loop.Menu_Loop(menus) 
    print "Your selection: "
    selector = gets.strip.to_i
-   if selector != 0
+   if @runtimecount == 0
      print "Compiling Real-time Logs"
      d1 = TransferLog.new
      DotFunction()
@@ -293,6 +308,7 @@ def MainMenu()
      stripped = d1.vhost_stripper(vhosts)
      DotFunction()
      final = d1.placer(stripped, tmp_file_name)
+     @runtimecount = @runtimecount + 1
      puts " Done!"
     end
     if selector == 7
@@ -321,6 +337,7 @@ def MainMenu()
    Shutdown.new.Again
    CommonLib_Remover()
 end
+
 
 d1 = LibraryLoader.new
 d1.load

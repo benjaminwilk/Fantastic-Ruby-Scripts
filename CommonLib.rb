@@ -18,7 +18,7 @@ end
 
 #Displays server's name -- useful for log files
   def CommonName()
-   return `uname -n`.strip
+   return ENV["HOSTNAME"].strip
   end
 
 #Asks user to input a specific hour, and will return to function
