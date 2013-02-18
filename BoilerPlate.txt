@@ -173,3 +173,53 @@ end
 d1 = Common_library_function.new
 d1.common_library_load
 d1.common_library_run
+
+#Version 4.0
+#Large portions of it rewritten, stratified the functions a bit more, added some protective measures, and tried removing more of the bash functions, but I don't want to require modules in a module starting function. 
+class CommonLoad
+  def exist
+    return File.exists?('CommonLib.rb')
+  end
+
+  def version
+    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+  end
+ 
+  def download()
+    `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+
+  def deletion()
+    `rm -rf /home/nex*/CommonLib.rb`
+#     File.delete("/home/nex*/CommonLib.rb")
+  end
+
+  def verifier_uptime
+    if version.match('404')
+     puts "Looks like the version verifier is down..."
+     deletion()
+     download()
+    end
+  end
+ 
+  def load
+    verifier_uptime
+    if exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != version
+       	deletion()
+        download()
+      end
+    else
+      download()
+    end
+   end
+
+  def run
+    require './CommonLib.rb'
+  end
+end
+
+d2 = CommonLoad.new
+d2.load
+d2.run
