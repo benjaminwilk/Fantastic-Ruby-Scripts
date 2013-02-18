@@ -305,7 +305,11 @@ def MainMenu()
    loop.Menu_Loop(menus) 
    print "Your selection: "
    selector = gets.strip.to_i
-   if @runtimecount == 0
+   if selector == 0
+     puts "Goodbye."
+     exit
+   end
+   if @runtimecount == 0 or selector == 0
      print "Compiling Real-time Logs"
      d1 = TransferLog.new
      DotFunction()
@@ -320,7 +324,7 @@ def MainMenu()
      final = d1.placer(stripped, tmp_file_name)
      @runtimecount = @runtimecount + 1
      puts " Done!"
-    end
+   end
     if selector == 7
       SpecficIP()
     elsif selector == 3
@@ -337,10 +341,6 @@ def MainMenu()
       CompareHitsDomain()
     elsif selector == 8
       puts IPLocationFinder()
-    elsif selector == 0
-      abort("\nGoodbye")
-    elsif selector.class? != integer
-      raise TypeError, "Somehow this isn't an integer."
     else 
       MainMenu()
     end
