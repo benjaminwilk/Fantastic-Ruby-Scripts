@@ -6,29 +6,39 @@
 
 require 'fileutils'
 
-class LibraryLoader
+class CommonLoad
   def exist
     return File.exists?('CommonLib.rb')
-  end 
-  def version_check
+  end
+  def version
     return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
-  end 
+  end
+  def download()
+    `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+  def deletion()
+    `rm -rf /home/nex*/CommonLib.rb`
+  end
+  def verifier_uptime
+    if version.match('404')
+     puts "Looks like the version verifier is down..."
+     deletion()
+     download()
+    end
+  end
   def load
+    verifier_uptime
     if exist == true
       running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != version_check
-        `rm -rf /home/nex*/CommonLib.rb `
-        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-      end 
+      if running_version != version
+        deletion()
+        download()
+      end
     else
-      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-    end 
-  end 
-  def run 
-    require './CommonLib.rb'
-  end 
-
-  def common_library_run
+      download()
+    end
+   end
+  def run
     require './CommonLib.rb'
   end
 end
@@ -295,7 +305,11 @@ def MainMenu()
    loop.Menu_Loop(menus) 
    print "Your selection: "
    selector = gets.strip.to_i
-   if @runtimecount == 0
+   if selector == 0
+     puts "Goodbye."
+     exit
+   end
+   if @runtimecount == 0 or selector == 0
      print "Compiling Real-time Logs"
      d1 = TransferLog.new
      DotFunction()
@@ -310,7 +324,7 @@ def MainMenu()
      final = d1.placer(stripped, tmp_file_name)
      @runtimecount = @runtimecount + 1
      puts " Done!"
-    end
+   end
     if selector == 7
       SpecficIP()
     elsif selector == 3
@@ -327,10 +341,6 @@ def MainMenu()
       CompareHitsDomain()
     elsif selector == 8
       puts IPLocationFinder()
-    elsif selector == 0
-      abort("\nGoodbye")
-    elsif selector.class? != integer
-      raise TypeError, "Somehow this isn't an integer."
     else 
       MainMenu()
     end
@@ -339,7 +349,7 @@ def MainMenu()
 end
 
 
-d1 = LibraryLoader.new
-d1.load
-d1.run
+d2 = CommonLoad.new
+d2.load
+d2.run
 MainMenu()

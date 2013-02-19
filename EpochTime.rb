@@ -6,24 +6,39 @@ require "fileutils"
 require "date"
 require "optparse"
 
-class LibraryLoader
+class CommonLoad
   def exist
     return File.exists?('CommonLib.rb')
   end
-  def version_check
+  def version
     return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
   end
-  def load
-    if exist == true
-      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != version_check
-        `rm -rf /home/nex*/CommonLib.rb `
-        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-      end
-    else
-      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  def download()
+    `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+  def deletion()
+    `rm -rf /home/nex*/CommonLib.rb`
+#     File.delete("/home/nex*/CommonLib.rb")
+  end
+  def verifier_uptime
+    if version.match('404')
+     puts "Looks like the version verifier is down..."
+     deletion()
+     download()
     end
   end
+  def load
+    verifier_uptime
+    if exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != version
+        deletion()
+        download()
+      end
+    else
+      download()
+    end
+   end
   def run
     require './CommonLib.rb'
   end
@@ -87,9 +102,9 @@ class EpochFunction
   end
 end
 
-d1 = LibraryLoader.new
-d1.load
-d1.run
+d2 = CommonLoad.new
+d2.load
+d2.run
 epoch = EpochFunction.new
 name_value = epoch.user_entry
 bash_path = epoch.search(name_value)
