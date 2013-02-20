@@ -39,37 +39,41 @@ class CommonLoad
   end
 end
 
-def filename()
+class MySQLCredentials
+  def useraccess
+    File.open("/home/nexbwilk/.mytop").each_line do |x|
+      if x.grep("user=")
+        return x
+      end
+    end
+  end
+
+  def passaccess
+    File.open("/home/nexbwilk/.mytop").each_line do |x|
+      if x.grep("pass=")
+        return x
+      end
+    end
+  end
+end
+
+
+def File_Name()
   print "Enter name of file with database repairs to be made: "
-  return database_read = gets.strip
+  puts database_read = gets.strip.class
 end
 
-def fileexist()
-  if filename().exist? == false
+#Apparently Ruby 1.8.7 doesn't support exist
+def File_Exist()
+  if File_Name().exist? 
     puts "Sorry, doesn't appear that filename is correct."
-    exit
-  end
-end
-
-def useraccess
-  File.open("/home/nexbwilk/.mytop").each_line do |x|
-    if x.grep("user=")
-      return x
-    end
-  end
-end
-
-def passaccess
-  File.open("/home/nexbwilk/.mytop").each_line do |x|
-    if x.grep("pass=")
-      return x
-    end
+    Menu() 
   end
 end
 
 def LogCheck
   File.open("/var/log/mysqld.log").each_line do |y|
-    if y.grep("[ERROR]")
+    if y.grep("[ERROR]") == true
       puts y
     end
   Menu()
@@ -77,10 +81,18 @@ def LogCheck
   Menu()
 end  
 
+def Simple_Repair
+  File_Exist()
+end
+
+def Advanced_Repair
+  File_Exist()
+end
+
 #master = "./database_read.txt"
 new = "./final_database.txt"
 
-#  File.open(filename).each_line do |x|
+#  File.open(File_Name).each_line do |x|
 #     final = x.scan(/'([^']*)'/)
 #    output.puts final
 #  end
@@ -103,12 +115,16 @@ def Menu()
   Loop_Function.new.Menu_Loop(elements)
   print "Your selection: "
   selector = gets.strip.to_i
+  puts
   if selector == 1
-    simplerepair()
+    Simple_Repair()
   elsif selector == 2
-    advancedrepair()
+    Advanced_Repair()
   elsif selector == 3
     LogCheck()
+  elsif selector == 0
+   puts "Goodbye"
+   exit
   end
 end
 
