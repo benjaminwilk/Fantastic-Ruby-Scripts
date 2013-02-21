@@ -326,8 +326,8 @@ def MainMenu()
      puts "Goodbye."
      exit
    end
-#   if @runtimecount == 0
-   if !tmp_file_name
+   if @runtimecount == 0
+#   if !tmp_file_name
      tmp_file_name = Log_Compiler()
    else 
      tmp_file_name = tmp.LogInTmp 
@@ -348,7 +348,7 @@ def MainMenu()
     elsif selector == 5
       CompareHitsDomain()
     elsif selector == 8
-      puts IPLocationFinder()
+      IPOptions.new.IPLocationFinder()
     else 
       MainMenu()
     end

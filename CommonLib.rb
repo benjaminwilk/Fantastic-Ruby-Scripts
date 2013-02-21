@@ -5,14 +5,14 @@
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
 class Loop_Function
   def Menu_Loop(elements)
-   elements.push("Quit")
-   elements.each_index { |x|
-	if elements[x].eql?("Quit")
-	  puts "0. #{elements[x]}"
-	else
-      puts "#{x+1}. #{elements[x]}"
-	end
-   }
+    elements.push("Quit")
+    elements.each_index { |x|
+      if elements[x].eql?("Quit")
+        puts "0. #{elements[x]}"
+      else
+        puts "#{x+1}. #{elements[x]}"
+      end
+    }
   end
 end
 
@@ -43,14 +43,14 @@ end
 #Asks user to input a specific hour, and will return to function
   def SpecifyTime(printblock)
 #   print "\nIs there a specific hour you would like to see: "
-   print "\n#{printblock} "
-   return spectime = gets.strip
+    print "\n#{printblock} "
+    return spectime = gets.strip
   end
 
 #Checks to see if user wants to run again
   def RunAgain()
-   print "\nWould you like to run again? (Y/N): "
-   return runner = gets.strip.upcase
+    print "\nWould you like to run again? (Y/N): "
+    return runner = gets.strip.upcase
   end
 
   def Log_File_Creator(log_type)
@@ -64,22 +64,17 @@ end
 #A time function that got really screwed up, trying to implement arguments for long time version and short
 #class Timedisplay
   def Time_Format(*num_value)
-   num_value[0] = num_value[0].downcase
-
-  if num_value[0] == "monthhour"
-    return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
-
-   elsif num_value[0] == "hour"
-    return Time.now.strftime("%H:%M:%S")
-
-   elsif num_value[0].eql?("date")
-    return Time.now.strftime("%d/%b/%Y")
-
-   elsif num_value[0] == "monthtime"
-    return Time.now.strftime("%m-%d-%Y-%T")
-
-   else 
-    fail("Requires accompanying argument.")
+    num_value[0] = num_value[0].downcase
+    if num_value[0] == "monthhour"
+      return Time.now.strftime("%m/%d/%Y - %H:%M:%S")
+    elsif num_value[0] == "hour"
+      return Time.now.strftime("%H:%M:%S")
+    elsif num_value[0].eql?("date")
+      return Time.now.strftime("%d/%b/%Y")
+    elsif num_value[0] == "monthtime"
+      return Time.now.strftime("%m-%d-%Y-%T")
+    else 
+      fail("Requires accompanying argument.")
   end
  end
 #end
@@ -92,29 +87,31 @@ end
   def zeroadder(x)
     x = x.to_s
     if x.length == 1
-    return x = "0" + x
-   else
-    return x
-   end
+      return x = "0" + x
+    else
+      return x
+    end
   end
 
 #User input IP, returns to function
- def IPcheck()
-   print "What IP address or domain would you like to check (keep blank to go back): "
-   return ipaddy = gets.strip
- end
+class IPOptions
+  def IPcheck()
+    print "What IP address or domain would you like to check (keep blank to go back): "
+    return ipaddy = gets.strip
+  end
 
 #Runs IP address through geoiptool which will show location of IP
- def IPLocationFinder()
-  ipcheck = IPcheck()
-  if ipcheck.empty? == true
-    return `whois #{IPcheck}`
+  def IPLocationFinder()
+    ipcheck = IPcheck()
+    if ipcheck.empty? == true
+      return `whois #{IPcheck}`
+    end
   end
- end
+end
 
 
 #Removes commonlib library at the end of the script
- def CommonLib_Remover()
-  puts "Goodbye"
-  `rm -rf ./CommonLib.rb`
- end
+  def CommonLib_Remover()
+    puts "Goodbye"
+    File.delete("./CommonLib.rb") #`rm -rf ./CommonLib.rb`
+  end
