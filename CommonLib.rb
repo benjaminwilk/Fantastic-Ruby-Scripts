@@ -16,6 +16,25 @@ class Loop_Function
   end
 end
 
+class Shutdown
+  def Again()
+   # choice = ""
+    print "\nWould you like to check more (Y/N): "
+    choice = gets.strip.upcase
+    if choice == "Y"
+      MainMenu()
+    elsif choice =="N"
+      abort("\nGoodbye")
+    else
+      Again()
+    end
+  end
+
+  def Deletion
+    Dir["CommonLib.rb"]
+  end
+end
+
 #Displays server's name -- useful for log files
   def CommonName()
    return ENV["HOSTNAME"].strip

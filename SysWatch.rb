@@ -1,32 +1,50 @@
 #!/usr/bin/env ruby
 #SysWatch.rb - Shamelessly stolen from Eugene, rewritten in Ruby to check the system every so often for various stats
 #Change History: Tried adding in a logging function, but it didn't work out as I intended.  Removed the functionality, but might work on it longer.
+#Last Edit: Feb 21, 2013
 
 require 'fileutils'
 require 'optparse'
 
-class Common_library_function
-  def common_library_exist
+class CommonLoad
+  def exist
     return File.exists?('CommonLib.rb')
   end
 
-  def common_library_version
+  def version
     return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
   end
 
-  def common_library_load
-    if Common_library_function.new.common_library_exist == true
-      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != Common_library_function.new.common_library_version
-        `rm -rf /home/nex*/CommonLib.rb `
-        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-      end
-    else
-      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  def download()
+    `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+
+  def deletion()
+    `rm -rf /home/nex*/CommonLib.rb`
+  end
+
+  def verifier_uptime
+    if version.match('404')
+     puts "Looks like the version verifier is down..."
+     deletion()
+     download()
     end
   end
 
-  def common_library_run
+  def load
+    verifier_uptime
+    if exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != version
+        deletion()
+        download()
+      end
+    else
+      download()
+    end
+   end
+
+  def run
     require './CommonLib.rb'
   end
 end
@@ -194,9 +212,9 @@ class System_file_display
   end
 end
 
-d1 = Common_library_function.new
-d1.common_library_load
-d1.common_library_run
+d2 = CommonLoad.new
+d2.load
+d2.run
 system = Runtime.new
 system.time_set
 system.time_parse
