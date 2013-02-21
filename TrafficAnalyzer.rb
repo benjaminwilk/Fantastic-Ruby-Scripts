@@ -161,13 +161,13 @@ class TransferLog
 end
 
 class HitsPerTime
-  def HitsPerHour(path)
+  def HitsPerHour(tmp_transfer_log)
     mstart = 00
     mstop = Time.new.hour
     mstart.upto(mstop) do |x|
       print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
       count = 0
-      open(path).each_line do |y|
+      open(tmp_transfer_log).each_line do |y|
         if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
           count = count + 1
         end
@@ -176,8 +176,8 @@ class HitsPerTime
     end
   end
 
-  def HitsPerMinute(logs)
-    puts logs
+  def HitsPerMinute(tmp_transfer_log)
+    #puts logs
     mhour = ''
     mstart = 00
     mend = 59
@@ -189,7 +189,7 @@ class HitsPerTime
       moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
       print "Server hits at '#{moment}: "
       count = 0
-      open(logs).each_line do |a|
+      open(tmp_transfer_log).each_line do |a|
         if a.include? moment
           count = count + 1
         end
@@ -284,21 +284,37 @@ def DotFunction()
   print "."
 end
 
+#I know this isn't in proper standards, but I don't want the script to create new log files every single times.   
+@runtimecount = 0
 
-#class Compiler
-#  scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
-#  attr_reader :scriptstart
-  #attr_writer :scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
-#    scriptstart = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
-#  attr_accessor :runtimecount
-#    runtimecount = 0
-#end
+class LogName
+  attr_accessor :LogInTmp
+end
 
-   @runtimecount = 0
+
+def Log_Compiler()
+  print "Compiling Real-time Logs"
+  d1 = TransferLog.new
+  DotFunction()
+  tmp_file_name = d1.log_name
+  DotFunction()
+  d1.log_creator(tmp_file_name)
+  DotFunction()
+  vhosts = d1.vhost_grab
+  DotFunction()
+  stripped = d1.vhost_stripper(vhosts)
+  DotFunction()
+  final = d1.placer(stripped, tmp_file_name)
+  tmp = LogName.new
+  tmp.LogInTmp = tmp_file_name
+#  return tmp_file_name
+  return tmp.LogInTmp
+  @runtimecount = @runtimecount + 1
+  puts " Done!"
+end
 
 
 def MainMenu()
-   #print Compiler.scriptstart
    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
    puts "\nWhat analytics would you like to see: "
    loop = Loop_Function.new
@@ -309,22 +325,13 @@ def MainMenu()
      puts "Goodbye."
      exit
    end
-   if @runtimecount == 0 or selector == 0
-     print "Compiling Real-time Logs"
-     d1 = TransferLog.new
-     DotFunction()
-     tmp_file_name = d1.log_name
-     DotFunction()
-     d1.log_creator(tmp_file_name)
-     DotFunction()
-     vhosts = d1.vhost_grab
-     DotFunction()
-     stripped = d1.vhost_stripper(vhosts)
-     DotFunction()
-     final = d1.placer(stripped, tmp_file_name)
-     @runtimecount = @runtimecount + 1
-     puts " Done!"
+#   if @runtimecount == 0
+   if !tmp_file_name
+     tmp_file_name = Log_Compiler()
+   else 
+     tmp_file_name = tmp.LogInTmp 
    end
+   puts tmp_file_name
     if selector == 7
       SpecficIP()
     elsif selector == 3
