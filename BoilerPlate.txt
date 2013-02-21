@@ -191,7 +191,6 @@ class CommonLoad
 
   def deletion()
     `rm -rf /home/nex*/CommonLib.rb`
-#     File.delete("/home/nex*/CommonLib.rb")
   end
 
   def verifier_uptime

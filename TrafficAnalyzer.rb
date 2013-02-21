@@ -46,8 +46,9 @@ end
 def SpecficIP()
   ipfinder = []
   b = Hash.new(0)
-  print "Enter the IP address you're interested in checking: "
-  ipcheck = gets.strip.to_i
+#  print "Enter the IP address you're interested in checking: "
+#  ipcheck = gets.strip.to_i
+  ipcheck = IPOptions.new.IPcheck
   directories = Dir["/home/*/var/*/logs/transfer.log"]
   directories.each_index do |x|
     open(directories[x]).each_line do |y|

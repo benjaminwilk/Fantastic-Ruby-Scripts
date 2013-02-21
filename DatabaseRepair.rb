@@ -72,8 +72,8 @@ def LogCheck
     if y.grep("[ERROR]")
       puts y
     end
-  Menu()
   end
+  RunAgain()
   Menu()
 end  
 
