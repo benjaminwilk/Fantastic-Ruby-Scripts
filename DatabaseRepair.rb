@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #Database Repair - Fixes corrupt databases, but you'll need good versions available
-#Last Modified: Febuary 19th, 2013
+#Last Modified: Febuary 25th, 2013
 
 class CommonLoad
   def exist
@@ -40,30 +40,22 @@ class CommonLoad
 end
 
 class MySQLCredentials
-  def useraccess
-    File.open("/home/nexbwilk/.mytop").each_line do |x|
-      if x.grep("user=")
-        return x
-      end
-    end
+  def Pass 
+    return credents = `grep "pass=" /home/nexbwilk/.mytop`.split(/pass=/).to_s.strip
   end
-
-  def passaccess
-    File.open("/home/nexbwilk/.mytop").each_line do |x|
-      if x.grep("pass=")
-        return x
-      end
-    end
+ 
+  def MySQL_Login
+    `mysql -uiworx -p#{Pass}
   end
 end
 
 
 def File_Name()
   print "Enter name of file with database repairs to be made: "
-  puts database_read = gets.strip.class
+  return DB_List = gets.strip.class
 end
 
-#Apparently Ruby 1.8.7 doesn't support exist
+#Apparently Ruby 1.8.7 doesn't support 'exist'
 def File_Exist()
   if File_Name().exist? 
     puts "Sorry, doesn't appear that filename is correct."
@@ -87,25 +79,29 @@ end
 
 def Advanced_Repair
   File_Exist()
+  `cat #{filetoaccess} | MySQLCredentials.new.MySQL_Login`
+#end
 end
+
+def DB_Name_Changer(DB_List)
+  File.open(DB_List).each_line do |x|
+    final = x.scan(/'([^']*)'/)
+    output.puts final
+  end
+
+  File.open(new).each do |y|
+    spliter = y.strip.split(".")
+    puts "#{spliter[0]} #{spliter[1]}"
+    filetoaccess = "./#{spliter[0]}_#{spliter[1]}.txt"  
+  end
+end
+
 
 #master = "./database_read.txt"
 new = "./final_database.txt"
 
-#  File.open(File_Name).each_line do |x|
-#     final = x.scan(/'([^']*)'/)
-#    output.puts final
-#  end
-#end
+#  `sed -n '/DROP TABLE IF EXISTS \`#{spliter[1]}\`/,/-- Table structure for table/p' ./#{spliter[0]}.sql  > #{filetoaccess}`
 
-#File.open(new).each do |y|
-#  spliter = y.strip.split(".")
-#  puts "#{spliter[0]} #{spliter[1]}"
- 
-#  filetoaccess = "./#{spliter[0]}_#{spliter[1]}.txt"
-
-#  `sed -n '/DROP TABLE IF EXISTS \`#{spliter[1]}\`/,/-- Table structure for table/p' ./#{spliter[0]}.sql  >
- #{filetoaccess}`
 
 #  `cat #{filetoaccess} | mysql -u#{useraccess} -p#{passaccess} #{spliter[0]}`
 #end

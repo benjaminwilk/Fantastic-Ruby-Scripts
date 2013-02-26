@@ -348,7 +348,7 @@ def MainMenu()
     elsif selector == 5
       CompareHitsDomain()
     elsif selector == 8
-      puts IPLocationFinder()
+       IPOptionsIPLocationFinder()
     else 
       MainMenu()
     end
