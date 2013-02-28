@@ -350,7 +350,7 @@ class MainFunction
     elsif selector == 5
       CompareHitsDomain()
     elsif selector == 8
-      IPOptions.new.IPLocationFinder()
+       IPOptionsIPLocationFinder()
     else 
       MainMenu()
     end

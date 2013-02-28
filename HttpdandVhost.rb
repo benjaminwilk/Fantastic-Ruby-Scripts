@@ -23,6 +23,7 @@ class SupportFunctions
     puts "\n\nChecking for changes on the server...\n\n"
     puts "Checking for dummy Vhost file         [#{VhostFunctions.new.search}] "
     puts "Checking for httpd.conf file changes  [#{HttpFunctions.new.search}] "
+    puts "Running PHP-FPM  			[#{PhpFpmFunctions.new.search}] "
   end
 
   def server_status 
@@ -72,6 +73,17 @@ class SupportFunctions
 
   def server_load
     load = `cat /proc/loadavg | awk '{print $1" "$2" "$3}'`
+  end
+end
+
+class PhpFpmFunctions
+  def search
+    phpfpm = Dir["/etc/php-fpm.conf"]
+    if phpfpm == true
+      return "True"
+    else
+      return "False"
+    end
   end
 end
 
