@@ -162,13 +162,13 @@ class TransferLog
 end
 
 class HitsPerTime
-  def HitsPerHour(tmp_transfer_log)
+  def HitsPerHour(compiled_file)
     mstart = 00
     mstop = Time.new.hour
     mstart.upto(mstop) do |x|
       print "Total server hits between #{zeroadder(x)}:00 - #{zeroadder(x)}:59 : "
       count = 0
-      open(tmp_transfer_log).each_line do |y|
+      open(compiled_file).each_line do |y|
         if y.include? "#{Time_Format("Date")}:#{zeroadder(x)}"
           count = count + 1
         end
@@ -177,7 +177,7 @@ class HitsPerTime
     end
   end
 
-  def HitsPerMinute(tmp_transfer_log)
+  def HitsPerMinute(compiled_file)
     #puts logs
     mhour = ''
     mstart = 00
@@ -190,7 +190,7 @@ class HitsPerTime
       moment = "#{Time_Format("Date")}:#{zeroadder(mhour)}:#{zeroadder(x)}".strip
       print "Server hits at '#{moment}: "
       count = 0
-      open(tmp_transfer_log).each_line do |a|
+      open(compiled_file).each_line do |a|
         if a.include? moment
           count = count + 1
         end
@@ -281,68 +281,70 @@ def TopHitsPerDomain()
   }
 end
 
-def DotFunction()
-  print "."
-end
-
 #I know this isn't in proper standards, but I don't want the script to create new log files every single times.   
-@runtimecount = 0
+$runtimecount = 0
+$logInTmp
 
-class LogName
-  attr_accessor :LogInTmp
-end
+#class LogName
+#  attr_accessor :LogInTmp
+#end
 
+class MainFunction
+  def Log_Compiler()
+    $runtimecount = $runtimecount + 1
+    print "Compiling Real-time Logs"
+    d1 = TransferLog.new
+    DotFunction()
+    tmp_file_name = d1.log_name
+    DotFunction()
+    d1.log_creator(tmp_file_name)
+    DotFunction()
+    vhosts = d1.vhost_grab
+    DotFunction()
+    stripped = d1.vhost_stripper(vhosts)
+    DotFunction()
+    final = d1.placer(stripped, tmp_file_name)
+#    tmp = LogName.new
+#    tmp.LogInTmp = tmp_file_name
+#    return tmp.LogInTmp
+    $logInTmp = tmp_file_name
+    puts " Done!"
+    return $logInTmp
+  end
 
-def Log_Compiler()
-  print "Compiling Real-time Logs"
-  d1 = TransferLog.new
-  DotFunction()
-  tmp_file_name = d1.log_name
-  DotFunction()
-  d1.log_creator(tmp_file_name)
-  DotFunction()
-  vhosts = d1.vhost_grab
-  DotFunction()
-  stripped = d1.vhost_stripper(vhosts)
-  DotFunction()
-  final = d1.placer(stripped, tmp_file_name)
-  tmp = LogName.new
-  tmp.LogInTmp = tmp_file_name
-#  return tmp_file_name
-  return tmp.LogInTmp
-  @runtimecount = @runtimecount + 1
-  puts " Done!"
-end
+  def DotFunction()
+    print "."
+  end
 
-
-def MainMenu()
-   menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
-   puts "\nWhat analytics would you like to see: "
-   loop = Loop_Function.new
-   loop.Menu_Loop(menus) 
-   print "Your selection: "
-   selector = gets.strip.to_i
-   if selector == 0
-     puts "Goodbye."
-     exit
-   end
-   if @runtimecount == 0
-#   if !tmp_file_name
-     tmp_file_name = Log_Compiler()
-   else 
-     tmp_file_name = tmp.LogInTmp 
-   end
-   puts tmp_file_name
+  def MainMenu()
+    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
+    puts "\nWhat analytics would you like to see: "
+    loop = Loop_Function.new
+    loop.Menu_Loop(menus) 
+    print "Your selection: "
+    selector = gets.strip.to_i
+    puts $runtimecount
+    if selector == 0
+      puts "Goodbye."
+      exit
+    end
+    if $runtimecount == 0 or $runtimecount == nil
+      compiled_file = Log_Compiler()
+    else 
+#      compiled_file = tmp.LogInTmp 
+      compiled_file = $logInTmp
+    end
+    puts compiled_file
     if selector == 7
       SpecficIP()
     elsif selector == 3
-      HitsPerTime.new.HitsPerHour(tmp_file_name)
+      HitsPerTime.new.HitsPerHour(compiled_file)
     elsif selector == 1
-      TopIPHitstoServer(tmp_file_name)
+      TopIPHitstoServer(compiled_file)
     elsif selector == 2
       TopIPBlockHits()
     elsif selector == 4
-      HitsPerTime.new.HitsPerMinute(tmp_file_name)
+      HitsPerTime.new.HitsPerMinute(compiled_file)
     elsif selector == 6
       TopHitsPerDomain()
     elsif selector == 5
@@ -352,12 +354,13 @@ def MainMenu()
     else 
       MainMenu()
     end
-   Shutdown.new.Again
-   CommonLib_Remover()
+    Shutdown.new.Again
+    CommonLib_Remover()
+  end
 end
 
 
 d2 = CommonLoad.new
 d2.load
 d2.run
-MainMenu()
+MainFunction.new.MainMenu()

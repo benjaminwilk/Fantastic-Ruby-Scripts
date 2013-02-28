@@ -22,7 +22,7 @@ class Shutdown
     print "\nWould you like to check more (Y/N): "
     choice = gets.strip.upcase
     if choice == "Y"
-      MainMenu()
+      MainFunction.new.MainMenu()
     elsif choice =="N"
       abort("\nGoodbye")
     else
