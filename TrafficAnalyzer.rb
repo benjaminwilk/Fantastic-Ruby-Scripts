@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #TrafficAnalyzer.rb
-#Version 1.95
-#Last edited: Feb 15, 2013
+#Version 2.00
+#Last edited: Feb 28, 2013
 #Last edit: Speeding up log compilation
 
 require 'fileutils'
@@ -43,13 +43,12 @@ class CommonLoad
   end
 end
 
-def SpecficIP()
+def SpecficIP(tmp_file_name)
   ipfinder = []
   b = Hash.new(0)
-#  print "Enter the IP address you're interested in checking: "
-#  ipcheck = gets.strip.to_i
   ipcheck = IPOptions.new.IPcheck
-  directories = Dir["/home/*/var/*/logs/transfer.log"]
+#  directories = Dir["/home/*/var/*/logs/transfer.log"]
+  directories = Dir[tmp_file_name]
   directories.each_index do |x|
     open(directories[x]).each_line do |y|
       if y.include?(ipcheck)
@@ -207,6 +206,37 @@ def TopIPBlockHits()
   puts `cat /home/*/var/*/logs/transfer.log | grep '#{Time_Format("Date")}:#{SpecifyTime(specify)}' | cut -d. -f1-3 | sort | uniq -c | sort -nr | head -n20 | sed 's/^[[:space:]]*//'`
 end
 
+
+#######  Working on revamping IP block hits  still needs some work, it just prints one last line 
+#def Bricks()
+#ipfinder = []
+#mystring = []
+#b = Hash.new(0)
+
+ # File.open(Log_Compiler()).each_line do |x|
+ #   if x.grep(/^\s/)
+ #     mystring.push(x[/[^ ]+/])
+ #   end
+#  end
+#  mystring.each do |y|
+#    y = y.to_s.split(".")
+#    ipfinder = y[0] + "." + y[1] + "." + y[2] + "."
+#    ipfinder = ipfinder.to_a
+#  end
+#  ipfinder.sort!
+#  ipfinder.each do |v|
+#    b[v] += 1
+#  end
+#  b = b.sort_by {|key, value| value}.reverse
+#  puts "\nTop 20 hits by #{ipcheck}:\n"
+#  b.each_with_index do |(key, value), index|
+#    if index != 20
+#      puts "#{value} #{key}"
+ #   end
+#  end
+#end
+
+
 def TopIPHitstoServer(vhosts)
   count = 0
   b = Hash.new(0)
@@ -286,7 +316,7 @@ $runtimecount = 0
 $logInTmp
 
 #class LogName
-#  attr_accessor :LogInTmp
+#  attr_accessor :$LogInTmp
 #end
 
 class MainFunction
@@ -328,7 +358,7 @@ class MainFunction
       puts "Goodbye."
       exit
     end
-    if $runtimecount == 0 or $runtimecount == nil
+    if $runtimecount == 0 
       compiled_file = Log_Compiler()
     else 
 #      compiled_file = tmp.LogInTmp 
@@ -336,7 +366,7 @@ class MainFunction
     end
     puts compiled_file
     if selector == 7
-      SpecficIP()
+      SpecficIP(compiled_file)
     elsif selector == 3
       HitsPerTime.new.HitsPerHour(compiled_file)
     elsif selector == 1
