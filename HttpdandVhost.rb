@@ -78,11 +78,10 @@ end
 
 class PhpFpmFunctions
   def search
-    phpfpm = Dir["/etc/php-fpm.conf"]
-    if phpfpm == true
-      return "True"
+    if File.exist?("/etc/php-fpm.d")
+      return "  True   "
     else
-      return "False"
+      return "  False  "
     end
   end
 end
