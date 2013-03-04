@@ -23,7 +23,7 @@ class SupportFunctions
     puts "\n\nChecking for changes on the server...\n\n"
     puts "Checking for dummy Vhost file         [#{VhostFunctions.new.search}] "
     puts "Checking for httpd.conf file changes  [#{HttpFunctions.new.search}] "
-    puts "Running PHP-FPM  			[#{PhpFpmFunctions.new.search}] "
+    puts "Running PHP-FPM      		      [#{PhpFpmFunctions.new.search}] "
   end
 
   def server_status 
@@ -40,22 +40,34 @@ class SupportFunctions
   end
 
   def main_menu 
-    selection = ["Create dummy vhost", "Change values to httpd.conf file", "Both 1 and 2", "Exit"]
+    selection = ["Create dummy vhost", "Change values to httpd.conf file", "Check php-fpm log for errors", "Change max children setting in php-fpm", "Both 1 and 2", "Exit"]
     puts "\nWhat would you like to do: "
     choice_display(selection)
-    choice = gets.strip
-    if choice == '1'
+    choice = gets.strip.to_i
+    if choice == 1
       vhost = VhostFunctions.new
       vhost.creator
-    elsif choice == '2'
+    elsif choice == 2
       httpd = HttpFunctions.new
       httpd.change
-    elsif choice == '3'
+    elsif choice == 3
+      phpfpm = PhpFpmFunctions.new
+      phpfpm.running
+      phpfpm.logs 
+      main_menu
+    elsif choice == 4
+      phpfpm = PhpFpmFunctions.new
+      phpfpm.running
+      phpfpm.logs 
+      phpfpm.users
+      phpfpm.editor
+      exit
+    elsif choice == 5
       vhost = VhostFunctions.new
       vhost.creator
       httpd = HttpFunctions.new
       httpd.change
-    elsif choice == '4'
+    elsif choice == 6
       abort("\nGoodbye\n")
     else 
       puts "Please enter an appropriate number.\n"
@@ -77,13 +89,65 @@ class SupportFunctions
 end
 
 class PhpFpmFunctions
-  def search
-    if File.exist?("/etc/php-fpm.d")
-      return "  True   "
-    else
-      return "  False  "
+  def running
+    if search == false
+      puts "Sorry, it appears this server isn't running PHP-FPM.\n"
+      support.new.main_menu
     end
   end
+      
+  def search
+    if File.exist?("/etc/php-fpm.d")
+      return "    True     "
+    else
+      return "    False    "
+    end
+  end
+
+  def logs
+    # WARNING
+    puts "\nMax_Children errors found in error log: "
+    File.open("/var/log/php-fpm/error.log").each do |x|
+      if x.include?("max_children") == true
+        puts x
+      end
+    end
+     puts "\n"
+  end
+
+  def corrector()
+  File.open("
+  
+  end
+
+  def users
+    puts "PHP-FPM user files: "
+    Dir.foreach("/etc/php-fpm.d/") do |y|
+      next if y == '.' or y == '..' or y == 'vhost-pool.tpl'
+      puts y
+    end
+    puts "\n"
+  end
+  
+  def editor
+    userpath = "/etc/php-fpm.d/#{userinput()}"
+    if File.exist?(userpath) == true
+      corrector(userpath)
+      userconf = userinput() + ".conf"
+      if File.exist?("/etc/php-fpm.d/#{userconf}") == false
+        puts "Sorry, doesn't appear that user exists."
+        exit
+      end
+    else
+    corrector()
+    end
+  end
+   
+  def userinput() 
+    print "Which user would you like to edit: "
+    return username = gets.strip
+  end   
+  
 end
 
 class VhostFunctions
