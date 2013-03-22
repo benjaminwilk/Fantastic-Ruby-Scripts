@@ -213,10 +213,10 @@ end
 #mystring = []
 #b = Hash.new(0)
 
- # File.open(Log_Compiler()).each_line do |x|
- #   if x.grep(/^\s/)
- #     mystring.push(x[/[^ ]+/])
- #   end
+# File.open(Log_Compiler()).each_line do |x|
+#   if x.grep(/^\s/)
+#     mystring.push(x[/[^ ]+/])
+#   end
 #  end
 #  mystring.each do |y|
 #    y = y.to_s.split(".")
@@ -283,7 +283,7 @@ class Shutdown
   end
 
   def Deletion
-    Dir["CommonLib.rb"]
+    Fileutils.del("CommonLib.rb")
   end
 end
 
