@@ -115,14 +115,14 @@ class PhpFpmFunctions
      puts "\n"
   end
 
-  def corrector()
-  File.open("
+#  def corrector()
+#  File.open("
   
-  end
+#  end
 
   def users
     puts "PHP-FPM user files: "
-    Dir.foreach("/etc/php-fpm.d/") do |y|
+    Dir.foreach('/etc/php-fpm.d/') do |y|
       next if y == '.' or y == '..' or y == 'vhost-pool.tpl'
       puts y
     end
