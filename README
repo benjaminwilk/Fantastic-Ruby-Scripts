@@ -3,18 +3,25 @@ Title: Fantastic Ruby Scripts
 A multitude of scripts I wrote, their titles are pretty self explanitory on what they do.
 
 HttpdandVhost.rb - Changes some settings in the /etc/httpd/conf/httpd.conf file to optimal settings, along with lowering the maxclients setting to an appropriate level.  Also will create dummy vhost file for monitoring service.
-wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/HttpdandVhost.rb; chmod u+x HttpdandVhost.rb; ruby HttpdandVhost.rb
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/HttpdandVhost.rb > HttpdandVhost.rb; chmod u+x HttpdandVhost.rb; ruby HttpdandVhost.rb
+
+vhost.txt - Addon for HttpdandVhost.rb
 
 DomainChecker.rb - A quick little script that will grab all the domain names on the server, print their name, their set IP address, and will then query dig and print out the IP address in use.  
-wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/DomainChecker.rb; chmod u+x; DomainChecker.rb; ruby DomainChecker.rb
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/DomainChecker.rb > DomainChecker.rb; chmod u+x; DomainChecker.rb; ruby DomainChecker.rb
 
 RebootFinderV2.rb - Collects a multitude of pertinent information from server.  Includes last reboots, disk usage, disk health, sar records, dmesg & messages logs and a few other things.
-wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/RebootFinderV2.rb; chmod u+x RebootFinderV2.rb; ruby RebootFinderV2.rb
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/RebootFinderV2.rb > RebootFinderV2.rb; chmod u+x RebootFinderV2.rb; ruby RebootFinderV2.rb
+
+EpochTime.rb - Provides a text file with time stamps converted to easier readability of the bash history of the user chosen. 
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/EpochTime.rb > EpochTime.rb; chmod u+x EpochTime.rb; ruby EpochTime.rb
 
 TrafficAnalyzer.rb - A conglomeration of a variety of scripts that checks server hits.  Includes highest visiting IP, IP blocks, Server hits divided by hour or minute, Domain hits compared to server hits, Top transfer log hits, What an IP is doing or where it's from
-wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/TrafficAnalyzer.rb; chmod u+x TrafficAnalyzer.rb; ruby TrafficAnalyzer.rb
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/TrafficAnalyzer.rb > TrafficAnalyzer.rb; chmod u+x TrafficAnalyzer.rb; ruby TrafficAnalyzer.rb
 
 SysWatch.rb - Runs on a server, with definable time setting and email address, will check memory usage, server load, mysql logging, and if over a certain threshold, will email user. 
-wget -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/SysWatch.rb; chmod u+x SysWatch.rb; ruby SysWatch.rb
+curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/SysWatch.rb > SysWatch.rb; chmod u+x SysWatch.rb; ruby SysWatch.rb
+
+BoilerPlate.txt - A copy of the "CommonLib.rb" loader that I've written, and the versions I've created.  Now  checks version available, among other things.  
 
 CommonLib.rb - My attempt at creating a "common library" for commonly used functions. Still working on getting some arguments to work. 
