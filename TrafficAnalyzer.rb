@@ -63,11 +63,11 @@ def SpecficIP(tmp_file_name)
     b[v] += 1
   end
   b = b.sort_by {|key, value| value}.reverse
-  writertest = FileUtils.touch("halalmeat")
+#  writertest = FileUtils.touch("halalmeat")
   puts "\nTop 20 hits by #{ipcheck}:\n"
   b.each_with_index do |(key, value), index|
     if index < 20
-      puts "#{value} #{key}" >> #{writertest}
+      puts "#{value} #{key}"# >> #{writertest}
     end
   end
 end
