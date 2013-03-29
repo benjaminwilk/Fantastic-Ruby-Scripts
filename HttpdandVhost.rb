@@ -23,7 +23,7 @@ class SupportFunctions
     puts "\n\nChecking for changes on the server...\n\n"
     puts "Checking for dummy Vhost file         [#{VhostFunctions.new.search}] "
     puts "Checking for httpd.conf file changes  [#{HttpFunctions.new.search}] "
-    puts "Running PHP-FPM      		      [#{PhpFpmFunctions.new.search}] "
+    puts "Is this server running PHP-FPM        [#{PhpFpmFunctions.new.search}] "
   end
 
   def server_status 
@@ -98,21 +98,22 @@ class PhpFpmFunctions
       
   def search
     if File.exist?("/etc/php-fpm.d")
-      return "    True     "
+      return "    Yes      "
     else
-      return "    False    "
+      return "     No      "
     end
   end
 
   def logs
     # WARNING
     puts "\nMax_Children errors found in error log: "
-    File.open("/var/log/php-fpm/error.log").each do |x|
+    File.open("/var/log/php-fpm/error.log").each_line do |x|
       if x.include?("max_children") == true
         puts x
       end
     end
      puts "\n"
+     gets
   end
 
 #  def corrector()

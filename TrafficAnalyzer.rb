@@ -47,7 +47,6 @@ def SpecficIP(tmp_file_name)
   ipfinder = []
   b = Hash.new(0)
   ipcheck = IPOptions.new.IPcheck
-#  directories = Dir["/home/*/var/*/logs/transfer.log"]
   directories = Dir[tmp_file_name]
   directories.each_index do |x|
     open(directories[x]).each_line do |y|
@@ -64,10 +63,11 @@ def SpecficIP(tmp_file_name)
     b[v] += 1
   end
   b = b.sort_by {|key, value| value}.reverse
+  writertest = FileUtils.touch("halalmeat")
   puts "\nTop 20 hits by #{ipcheck}:\n"
   b.each_with_index do |(key, value), index|
     if index < 20
-      puts "#{value} #{key}"
+      puts "#{value} #{key}" >> #{writertest}
     end
   end
 end
@@ -287,6 +287,7 @@ class Shutdown
   end
 end
 
+
 def TopHitsPerDomain()
   print "Specific hour (keep blank for entire day): "
   hour = gets.strip
@@ -311,7 +312,7 @@ def TopHitsPerDomain()
   }
 end
 
-#I know this isn't in proper standards, but I don't want the script to create new log files every single times.   
+#I know this isn't in proper standards, but I don't want the script to create and compile a new log file every single the main function is run.   
 $runtimecount = 0
 $logInTmp
 
