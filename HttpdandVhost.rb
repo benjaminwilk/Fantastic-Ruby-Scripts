@@ -97,9 +97,11 @@ class PhpFpmFunctions
   end
       
   def search
+      report = true
     if File.exist?("/etc/php-fpm.d")
       return "    Yes      "
     else
+      report = false
       return "     No      "
     end
   end
@@ -107,25 +109,39 @@ class PhpFpmFunctions
   def logs
     # WARNING
     puts "\nMax_Children errors found in error log: "
+    line_count = 0
     File.open("/var/log/php-fpm/error.log").each_line do |x|
-      if x.include?("max_children") == true
+      if x.include?("max_children") == true # or x.include?("WARNING") == true
         puts x
+        line_count = line_count + 1
       end
     end
-     puts "\n"
-     gets
+    if line_count == 0 
+      puts "Nothing found"
+    end
+    puts "\n"
+    gets
   end
 
-#  def corrector()
-#  File.open("
-  
-#  end
+  def corrector(userconf)
+    puts userconf
+    File.open(userconf).each_line do |r|
+      if r.grep("max_children")
+        puts r
+      end
+    end
+  end
 
   def users
     puts "PHP-FPM user files: "
+    incrementor = 1
     Dir.foreach('/etc/php-fpm.d/') do |y|
       next if y == '.' or y == '..' or y == 'vhost-pool.tpl'
-      puts y
+      puts "#{incrementor}. #{y}"
+      incrementor = incrementor + 1
+      if y.eof? == true
+        puts "Quit"
+      end
     end
     puts "\n"
   end
@@ -134,13 +150,13 @@ class PhpFpmFunctions
     userpath = "/etc/php-fpm.d/#{userinput()}"
     if File.exist?(userpath) == true
       corrector(userpath)
-      userconf = userinput() + ".conf"
-      if File.exist?("/etc/php-fpm.d/#{userconf}") == false
+      puts userconf = "/etc/php-fpm.d/" + userinput() + ".conf"
+      if File.exist?(userconf) == false
         puts "Sorry, doesn't appear that user exists."
         exit
       end
     else
-    corrector()
+    corrector(userconf)
     end
   end
    
