@@ -61,6 +61,7 @@ class SupportFunctions
       phpfpm.logs 
       phpfpm.users
       phpfpm.editor
+      phpfpm.corrector
       exit
     elsif choice == 5
       vhost = VhostFunctions.new
@@ -130,6 +131,13 @@ class PhpFpmFunctions
         puts r
       end
     end
+    print "What would you like to change max children to: "
+    maxchange = gets.strip
+    puts "Making the changes to the requested php-fpm file..."
+    text = File.read(userconf)
+    replace = text.gsub(/^pm.max_children = .*$/, "pm.max_children = #{maxchange}")
+  #  replace = replace.gsub(/^MaxClients.*$/, "MaxClients\t     160")
+    File.open(userconf, "w") {|file| file.puts replace }
   end
 
   def users
@@ -139,9 +147,9 @@ class PhpFpmFunctions
       next if y == '.' or y == '..' or y == 'vhost-pool.tpl'
       puts "#{incrementor}. #{y}"
       incrementor = incrementor + 1
-      if y.eof? == true
-        puts "Quit"
-      end
+#      if y.eof? == true
+#        puts "Quit"
+#      end
     end
     puts "\n"
   end
@@ -156,8 +164,8 @@ class PhpFpmFunctions
         exit
       end
     else
-    corrector(userconf)
     end
+#    corrector(userconf)
   end
    
   def userinput() 
