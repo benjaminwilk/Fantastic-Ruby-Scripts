@@ -62,7 +62,6 @@ class SupportFunctions
       phpfpm.users
       phpfpm.editor
       phpfpm.corrector
-      exit
     elsif choice == 5
       vhost = VhostFunctions.new
       vhost.creator
@@ -125,7 +124,6 @@ class PhpFpmFunctions
   end
 
   def corrector(userconf)
-    puts userconf
     File.open(userconf).each_line do |r|
       if r.grep("max_children")
         puts r
@@ -136,32 +134,30 @@ class PhpFpmFunctions
     puts "Making the changes to the requested php-fpm file..."
     text = File.read(userconf)
     replace = text.gsub(/^pm.max_children = .*$/, "pm.max_children = #{maxchange}")
-  #  replace = replace.gsub(/^MaxClients.*$/, "MaxClients\t     160")
     File.open(userconf, "w") {|file| file.puts replace }
   end
 
   def users
     puts "PHP-FPM user files: "
     incrementor = 1
+    y = []
     Dir.foreach('/etc/php-fpm.d/') do |y|
       next if y == '.' or y == '..' or y == 'vhost-pool.tpl'
-      puts "#{incrementor}. #{y}"
+      puts "#{incrementor}. #{y = y.to_a}"
       incrementor = incrementor + 1
-#      if y.eof? == true
-#        puts "Quit"
-#      end
     end
-    puts "\n"
+    puts "0. Quit\n"
   end
   
   def editor
-    userpath = "/etc/php-fpm.d/#{userinput()}"
+    results = userinput()
+    userpath = "/etc/php-fpm.d/#{results}"
     if File.exist?(userpath) == true
       corrector(userpath)
-      puts userconf = "/etc/php-fpm.d/" + userinput() + ".conf"
-      if File.exist?(userconf) == false
+      userconf = "/etc/php-fpm.d/" + #{results} + ".conf"
+      if File.exist?(userconf) == false or userpath == 0
         puts "Sorry, doesn't appear that user exists."
-        exit
+        raise "Hello"
       end
     else
     end
