@@ -120,7 +120,8 @@ end
 
 class TransferLog
   def log_name 
-    return path = "/tmp/transfer_#{Time.now.strftime("%F%T")}.log"
+    user_home = `pwd`.strip
+    return path = user_home + "/transfer_#{Time.now.strftime("%F%T")}.log"
   end
 
   def log_creator(file_name)

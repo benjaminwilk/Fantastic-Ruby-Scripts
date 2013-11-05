@@ -1,8 +1,0 @@
-<VirtualHost <IP>:80>
-  ServerName <IP>
-  DocumentRoot /var/www/html
-  DirectoryIndex index.html
-  RewriteEngine On
-  RewriteOptions inherit
-</VirtualHost>
-
