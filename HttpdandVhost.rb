@@ -241,3 +241,4 @@ apache = HttpFunctions.new
 apache.restart
 apache.template_removal
 abort("\nAll done\n")
+
