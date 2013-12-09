@@ -5,28 +5,50 @@
 require 'fileutils'
 #require 'sys/filesystem'
 
-class LibraryLoader
+class CommonLoad
   def exist
     return File.exists?('CommonLib.rb')
   end
-  def version_check
-    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+
+  def version
+    return version = `curl -Ls http://benjaminwilk.com/CommonVersion.html`.strip
   end
-  def load
-    if exist == true
-      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
-      if running_version != version_check
-        `rm -rf /home/nex*/CommonLib.rb `
-        `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
-      end
-    else
-      `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+
+  def download()
+    puts "Downloading a new version of CommonLib..."
+    `curl -Ls bit.ly/1gk6sfo > CommonLib.rb; chmod u+x CommonLib.rb`
+  end
+
+  def deletion()
+    `rm -rf /home/$SUDO_USER/CommonLib.rb`
+     download()
+  end
+
+  def verifier_uptime
+    if version !~/[0-9]/
+     puts "Looks like the version verifier is down..."
+     deletion()
     end
   end
+
+  def load
+    verifier_uptime
+    if exist == true
+      running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
+      if running_version != version
+        deletion()
+      end
+    else
+      download()
+    end
+   end
+
   def run
     require './CommonLib.rb'
   end
 end
+
+
 
 #class HardwareRelated
   def HardDrives()
@@ -130,8 +152,8 @@ def FileWrite()
        puts "Done"
        end
 
-d1 = LibraryLoader.new
-d1.load
-d1.run
+d2 = LibraryLoader.new
+d2.load
+d2.run
 FileWrite()
 
