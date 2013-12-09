@@ -7,39 +7,45 @@ class CommonLoad
   def exist
     return File.exists?('CommonLib.rb')
   end
+
   def version
-    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+    return version = `curl -Ls http://benjaminwilk.com/CommonVersion.html`.strip
   end
+
   def download()
-    `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
+    puts "Downloading a new version of CommonLib..."
+    `curl -Ls bit.ly/1gk6sfo > CommonLib.rb; chmod u+x CommonLib.rb`
   end
+
   def deletion()
-    `rm -rf /home/nex*/CommonLib.rb`
-#     File.delete("/home/nex*/CommonLib.rb")
+    `rm -rf /home/$SUDO_USER/CommonLib.rb`
+     download()
   end
+
   def verifier_uptime
-    if version.match('404')
+    if version !~/[0-9]/
      puts "Looks like the version verifier is down..."
      deletion()
-     download()
     end
   end
+
   def load
     verifier_uptime
     if exist == true
       running_version = File.read("./CommonLib.rb").match(/#COMMONLIB VERSION.*/).to_s.split(' ').slice!(2).to_s
       if running_version != version
         deletion()
-        download()
       end
     else
       download()
     end
    end
+
   def run
     require './CommonLib.rb'
   end
 end
+
 
 require 'date'
 require 'fileutils'
