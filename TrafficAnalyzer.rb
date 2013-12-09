@@ -296,9 +296,11 @@ end
 
 
 def TopHitsPerDomain()
-  print "Specific hour (keep blank for entire day): "
+  print "Specific hour (keep blank for entire day or enter 'q' to quit): "
   hour = gets.strip
-  if hour == '\n' or hour == ' ' or hour == ''
+  if hour =~ /[a-z]|[A-Z].*/
+   MainMenu()
+  elsif hour == '\n' or hour == ' ' or hour == ''
    hour = ""
   end
 
@@ -332,26 +334,17 @@ class MainFunction
     $runtimecount = $runtimecount + 1
     print "Compiling Real-time Logs"
     d1 = TransferLog.new
-    DotFunction()
     tmp_file_name = d1.log_name
-    DotFunction()
     d1.log_creator(tmp_file_name)
-    DotFunction()
     vhosts = d1.vhost_grab
-    DotFunction()
     stripped = d1.vhost_stripper(vhosts)
-    DotFunction()
     final = d1.placer(stripped, tmp_file_name)
 #    tmp = LogName.new
 #    tmp.LogInTmp = tmp_file_name
 #    return tmp.LogInTmp
     $logInTmp = tmp_file_name
-    puts " Done!"
-    return $logInTmp
-  end
-
-  def DotFunction()
-    print "."
+    puts "\n Done!"
+#    return $logInTmp
   end
 
   def MainMenu()
@@ -370,7 +363,7 @@ class MainFunction
       compiled_file = Log_Compiler()
     else 
 #      compiled_file = tmp.LogInTmp 
-      compiled_file = $logInTmp
+#      compiled_file = $logInTmp
     end
     puts compiled_file
     if selector == 7
