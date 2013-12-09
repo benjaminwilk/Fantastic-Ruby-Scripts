@@ -344,7 +344,7 @@ class MainFunction
 #    return tmp.LogInTmp
     $logInTmp = tmp_file_name
     puts "\n Done!"
-#    return $logInTmp
+    return $logInTmp
   end
 
   def MainMenu()
@@ -363,9 +363,9 @@ class MainFunction
       compiled_file = Log_Compiler()
     else 
 #      compiled_file = tmp.LogInTmp 
-#      compiled_file = $logInTmp
+      compiled_file = $logInTmp
     end
-    puts compiled_file
+#    puts compiled_file
     if selector == 7
       SpecficIP(compiled_file)
     elsif selector == 3
