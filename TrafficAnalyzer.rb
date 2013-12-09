@@ -11,7 +11,7 @@ class CommonLoad
     return File.exists?('CommonLib.rb')
   end
   def version
-    return version = `curl -k --silent http://benwilk.com/CommonVersion.html`.strip
+    return version = `curl -k --silent http://benjaminwilk.com/CommonVersion.html`.strip
   end
   def download()
     `curl -k --silent https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/CommonLib.rb > CommonLib.rb; chmod u+x CommonLib.rb`
