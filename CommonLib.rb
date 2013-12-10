@@ -1,6 +1,6 @@
-#COMMONLIB VERSION 0.70
-#Change date: January 11, 2013
-#Last edit: Last geoip site stopped working, updated that, and updating other various functions
+#COMMONLIB VERSION 0.71
+#Change date: December 10, 2013
+#Last edit: Added Root access check
 
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
 class Loop_Function
@@ -13,6 +13,16 @@ class Loop_Function
         puts "#{x+1}. #{elements[x]}"
       end
     }
+  end
+end
+
+#Requires user to be Root before letting user use script.
+class RootAccess
+  def StatusCheck
+    state = ENV['USER'].strip
+    if state =~ /nex*/
+      abort("\n\nSorry, this script will need to be run as root.\n\n\n")
+    end
   end
 end
 
