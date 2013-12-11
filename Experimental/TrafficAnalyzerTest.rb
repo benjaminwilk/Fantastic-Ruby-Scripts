@@ -336,7 +336,12 @@ class MainFunction
   def Menu_Choice()
     menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing"] #, "Check where a specific IP is from"]
   end
-
+  
+  #def LogAndRunTime()
+   # runtimecount = 0
+#	logInTmp
+#  end
+  
   def Log_Compiler()
     $runtimecount = $runtimecount + 1
     print "Compiling Real-time Logs"
@@ -350,7 +355,7 @@ class MainFunction
 #    tmp.LogInTmp = tmp_file_name
 #    return tmp.LogInTmp
     $logInTmp = tmp_file_name
-    puts "\n Done!"
+    puts "\nDone!"
     return $logInTmp
   end
 
