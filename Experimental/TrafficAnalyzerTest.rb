@@ -356,14 +356,20 @@ class MainFunction
   def MainMenu()
     puts "\nWhat analytics would you like to see: "
     loop = Loop_Function.new
-    loop.Menu_Loop(Menu_Choice()) 
-    print "Your selection: "
-    selector = gets.strip.to_i
+    decision = loop.Menu_Loop(Menu_Choice()).to_i 
+    #print "Your selection: "
+    #selector = gets.strip.to_i
 #Test tool to see if the application is generating a new transfer file over and over
 #    puts $runtimecount
-    if selector == 0
+
+    if decision == 0
       puts "Goodbye."
       exit
+    end
+ 
+    if decision == 8
+       IPOptions.new.IPLocationFinder()
+       MainMenu()
     end
     if $runtimecount == 0 
       compiled_file = Log_Compiler()
@@ -372,22 +378,22 @@ class MainFunction
       compiled_file = $logInTmp
     end
 #    puts compiled_file
-    if selector == 7
+    if decision == 7
       SpecficIP(compiled_file)
-    elsif selector == 3
+    elsif decision == 3
       HitsPerTime.new.HitsPerHour(compiled_file)
-    elsif selector == 1
+    elsif decision == 1
       TopIPHitstoServer(compiled_file)
-    elsif selector == 2
+    elsif decision == 2
       TopIPBlockHits()
-    elsif selector == 4
+    elsif decision == 4
       HitsPerTime.new.HitsPerMinute(compiled_file)
-    elsif selector == 6
+    elsif decision == 6
       TopHitsPerDomain()
-    elsif selector == 5
+    elsif decision == 5
       CompareHitsDomain()
-    elsif selector == 8
-       IPOptionsIPLocationFinder()
+#    elsif decision == 8
+#       IPOptions.new.IPLocationFinder()
     else 
       MainMenu()
     end

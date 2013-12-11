@@ -13,6 +13,8 @@ class Loop_Function
         puts "#{x+1}. #{elements[x]}"
       end
     }
+    print "\nYour selection: "
+    return decision = gets.strip
   end
 end
 
@@ -113,7 +115,7 @@ class IPOptions
 #Runs IP address through geoiptool which will show location of IP
   def IPLocationFinder()
     ipcheck = IPcheck()
-    if ipcheck.empty? == true
+    if ipcheck.empty? == false
       return `whois #{IPcheck}`
     end
   end

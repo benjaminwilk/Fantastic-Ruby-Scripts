@@ -152,6 +152,8 @@ def AvailableDates()
   end
 end
 
+end
+
 def BigOrSmall()
   puts "Are you looking for a specific user's logs, or the entire server's logs: "
   wideOrNarrow = gets.strip.to_upper
