@@ -1,28 +1,43 @@
 Title: Fantastic Ruby Scripts
+Last Edit: December 11th, 2013
 
-A multitude of scripts I wrote, their titles are pretty self explanitory on what they do.
+A variety of scripts written by me, their reason for creation to make the position of system monitoring a bit easier. 
 
-HttpdandVhost.rb - Changes some settings in the /etc/httpd/conf/httpd.conf file to optimal settings, along with lowering the maxclients setting to an appropriate level.  Also will create dummy vhost file for monitoring service.
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/HttpdandVhost.rb > HttpdandVhost.rb; chmod u+x HttpdandVhost.rb; ruby HttpdandVhost.rb
+BoilerPlate.txt - Not actually a script; A change log of the Common Library loader that I wrote.  Includes original version and all the fixes I've come up with.    
 
-vhost.txt - Addon for HttpdandVhost.rb
+HttpdandVhost.rb - Changes some settings in /etc/httpd/conf/httpd.conf file to optimal settings, along with lowering the maxclients setting to an appropriate level, also creates dummy vhost file so monitoring service won't complain.
+vhost.txt - Rider for HttpdandVhost.rb
 
-DomainChecker.rb - A quick little script that will grab all the domain names on the server, print their name, their set IP address, and will then query dig and print out the IP address in use.  
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/DomainChecker.rb > DomainChecker.rb; chmod u+x; DomainChecker.rb; ruby DomainChecker.rb
+DomainChecker.rb - Grabs all the domain names on the server, prints their name, their allocated IP address, and their actual IP address in use.  
 
-RebootFinderV2.rb - Collects a multitude of pertinent information from server.  Includes last reboots, disk usage, disk health, sar records, dmesg & messages logs and a few other things.
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/RebootFinderV2.rb > RebootFinderV2.rb; chmod u+x RebootFinderV2.rb; ruby RebootFinderV2.rb
+RebootFinderV2.rb - Collects pertinent information from server.  Includes last reboots, disk usage, disk health, sar records, dmesg & messages logs and a few other things.  These records are placed in a text document.  
 
-EpochTime.rb - Provides a text file with time stamps converted to easier readability of the bash history of the user chosen. 
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/EpochTime.rb > EpochTime.rb; chmod u+x EpochTime.rb; ruby EpochTime.rb
+EpochTime.rb - Converts time stamps from user's bash history and provides it in a text file.   
 
-TrafficAnalyzer.rb - A conglomeration of a variety of scripts that checks server hits.  Includes highest visiting IP, IP blocks, Server hits divided by hour or minute, Domain hits compared to server hits, Top transfer log hits, What an IP is doing or where it's from
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/TrafficAnalyzer.rb > TrafficAnalyzer.rb; chmod u+x TrafficAnalyzer.rb; ruby TrafficAnalyzer.rb
+TrafficAnalyzer.rb - A variety of useful commands that checks server visits.  Just check it out, it's main menu tells you what it can do.  
 
-SysWatch.rb - Runs on a server, with definable time setting and email address, will check memory usage, server load, mysql logging, and if over a certain threshold, will email user. 
-curl -q https://raw.github.com/securitygate/Fantastic-Ruby-Scripts/master/SysWatch.rb > SysWatch.rb; chmod u+x SysWatch.rb; ruby SysWatch.rb
+LogExtractor.rb - Finds archived transfer logs, unzips them, compiles them, and allows user to view past users.   
 
-BoilerPlate.txt - A copy of the "CommonLib.rb" loader that I've written, and the versions I've created.  Now  checks version available, among other things.  
+SysWatch.rb - Doesn't totally work; runs on a server, with time setting parameter and email address, checks memory usage, server load, mysql logging, and if over a certain threshold, will email user. 
 
-CommonLib.rb - My attempt at creating a "common library" for commonly used functions. Still working on getting some arguments to work. 
+DatabaseRepair.rb - I don't think this one works either; Automated process that logs into MySQL and fixes the broken tables in the user-defined database.  
 
+CommonLib.rb - A Common Library of frequently used functions.  
+
+Experimental Folder -- Rather than making changes to working files, these scripts in are in the testing phase.  These files ere still being worked on and will be pushed out eventually.
+
+Download Links:
+
+Traffic Analyzer -- curl -Ls bit.ly/IB4OaE > TrafficAnalyzer.rb;chmod u+x TrafficAnalyzer.rb;./TrafficAnalyzer.rb
+
+Httpd And Vhost  -- curl -Ls bit.ly/1cwg8jg > HttpdandVhost.rb;chmod u+x HttpdandVhost.rb;./HttpdandVhost.rb
+
+Domain Checker   -- curl -Ls bit.ly/IB5blu > DomainChecker.rb;chmod u+x; DomainChecker.rb;./DomainChecker.rb
+
+Reboot Finder V2 -- curl -Ls bit.ly/1jE5ha8 > RebootFinderV2.rb;chmod u+x RebootFinderV2.rb;./RebootFinderV2.rb
+
+Epoch Time       -- curl -Ls bit.ly/1cwgtT4 > EpochTime.rb;chmod u+x EpochTime.rb;./EpochTime.rb
+
+System Watch     -- curl -Ls bit.ly/1dhzMhB > SysWatch.rb;chmod u+x SysWatch.rb;./SysWatch.rb
+
+Common Library   -- curl -Ls bit.ly/1gk6sfo > CommonLib.rb; chmod u+x CommonLib.rb
