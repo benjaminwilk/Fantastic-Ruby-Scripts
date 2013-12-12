@@ -7,17 +7,17 @@ require 'fileutils'
 
 class CommonLoad
   def exist
-    return File.exists?('CommonLib.rb')
+    return File.exists?('./CommonLib.rb')
   end
   def version
     return version = `curl -Ls bit.ly/18Gni3l`.strip
   end
   def download()
     puts "Downloading a new version of CommonLib..."
-    `curl -Ls bit.ly/1gk6sfo > CommonLib.rb; chmod u+x CommonLib.rb`
+    `curl -Ls bit.ly/1gk6sfo > CommonLib.rb;chmod u+x CommonLib.rb`
   end
-  def deletion()
-    `rm -rf /home/$SUDO_USER/CommonLib.rb`
+  def deletion
+    `rm #{`pwd`.strip}/CommonLib.rb`
      download()
   end
   def verifier_uptime
