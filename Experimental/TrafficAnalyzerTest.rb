@@ -2,7 +2,7 @@
 #TrafficAnalyzerTest.rb
 #Version 2.10 BETA 1
 #Last edited: December 10, 2013
-#Last edit: Speeding up log compilation
+#Last edit: Removed specific IP checker; didn't work 
 #Add in top IP address hitting server -- IP address location
 
 require 'fileutils'
@@ -70,7 +70,7 @@ def SpecficIP(tmp_file_name)
     b[v] += 1
   end
   b = b.sort_by {|key, value| value}.reverse
-#  writertest = FileUtils.touch("halalmeat")
+#  writertest = FileUtils.touch("Touch_File_TEST")
   puts "\nTop 20 hits by #{ipcheck}:\n"
   b.each_with_index do |(key, value), index|
     if index < 20
@@ -127,7 +127,7 @@ end
 
 class TransferLog
   def log_name 
-    user_home = `pwd`.strip
+    user_home = Dir.pwd.strip
     return path = user_home + "/transfer_#{Time.now.strftime("%F%T")}.log"
   end
 
@@ -284,7 +284,7 @@ class Shutdown
     if choice == "Y"
       MainMenu()
     elsif choice =="N"
-      puts compiled_file
+#      puts compiled_file
       abort("\nGoodbye")
     else
       Again()
@@ -293,6 +293,7 @@ class Shutdown
 
   def Deletion
     Fileutils.del("CommonLib.rb")
+#    puts "The Common Library has been deleted: #{require Commonlib.rb}"
   end
 end
 
@@ -333,7 +334,7 @@ $logInTmp
 
 class MainFunction
   def Menu_Choice()
-    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing", "Check where a specific IP is from"]
+    menus = ["Top IP hits to server", "Top IP block hits to server", "Server hits - divided by hour", "Server hits - divided by minute", "Compare hits to domain with server hits", "Top transfer log hits","Check what a specific IP is doing"] #, "Check where a specific IP is from"]
   end
 
   def Log_Compiler()
@@ -362,21 +363,24 @@ class MainFunction
 #Test tool to see if the application is generating a new transfer file over and over
 #    puts $runtimecount
 
-    if decision == 0
-      puts "Goodbye."
-      exit
+#    if decision == 0
+#      puts "Goodbye."
+#      exit
+    if decision < 0 or decision > Menu_Choice().count
+      MainMenu()
     end
  
-    if decision == 8
-       IPOptions.new.IPLocationFinder()
-       MainMenu()
-    end
+#    if decision == 8
+#       IPOptions.new.IPLocationFinder()
+#       MainMenu()
+#    end
     if $runtimecount == 0 
       compiled_file = Log_Compiler()
     else 
 #      compiled_file = tmp.LogInTmp 
       compiled_file = $logInTmp
     end
+#Test method to view compiled file path
 #    puts compiled_file
     if decision == 7
       SpecficIP(compiled_file)

@@ -14,7 +14,12 @@ class Loop_Function
       end
     }
     print "\nYour selection: "
-    return decision = gets.strip
+    decision = gets.strip
+    if decision == 0
+      puts "\nGoodbye\n"
+      exit
+    end
+    return decision
   end
 end
 

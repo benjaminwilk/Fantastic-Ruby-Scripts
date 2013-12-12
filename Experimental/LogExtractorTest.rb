@@ -49,7 +49,7 @@ def LogGrab()
   print "\nPress 0 to quit or enter the date you're looking for (Month/Day): "
   longdate = gets.strip.split(/\/| /)
   if longdate[0] == "0"
-    abort("Goodbye")
+    abort("\nGoodbye\n")
   end
   if longdate[0].length > 3
     month = longdate[0].slice(0..2)
@@ -152,7 +152,6 @@ def AvailableDates()
   end
 end
 
-end
 
 def BigOrSmall()
   puts "Are you looking for a specific user's logs, or the entire server's logs: "
