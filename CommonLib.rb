@@ -58,7 +58,7 @@ class ScriptVersionCheck
   end
 
   def CurrentVersion
-    curVersion = `curl -Ls bit.ly/IRXoPX
+    curVersion = `curl -Ls bit.ly/IRXoPX`
   end
 
   def downloader()
