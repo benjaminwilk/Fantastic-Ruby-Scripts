@@ -9,7 +9,7 @@ class CommonLoad
     return File.exists?('CommonLib.rb')
   end
   def version
-    return version = `curl -Ls http://benjaminwilk.com/CommonVersion.html`.strip
+    return version = `curl -Ls bit.ly/18Gni3l`.strip
   end
   def download()
     puts "Downloading a new version of CommonLib..."
