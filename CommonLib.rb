@@ -1,6 +1,6 @@
-#COMMONLIB VERSION 0.71
-#Change date: December 10, 2013
-#Last edit: Added Root access check
+#COMMONLIB VERSION 0.80
+#Change date: December 12, 2013
+#Last edit: The Loop function is just getting bigger and more intrusive, adding in a script version check!  Oh joy!  I'm sure there won't be any bugs at all and it will be a Christmas Miracle!
 
 #Loop used for menus -- counts the amount of elements to loop, displays them along with a number along-side
 class Loop_Function
@@ -13,6 +13,13 @@ class Loop_Function
         puts "#{x+1}. #{elements[x]}"
       end
     }
+    print "\nYour selection: "
+    decision = gets.strip
+    if decision == 0
+      puts "\nGoodbye\n"
+      exit
+    end
+    return decision
   end
 end
 
@@ -44,6 +51,33 @@ class Shutdown
     Dir["CommonLib.rb"]
   end
 end
+
+class ScriptVersionCheck
+  def WhatVersionAmI
+    File.read("./TrafficAnalyzerTest.rb").match(/#Version.*/)
+  end
+
+  def CurrentVersion
+    curVersion = `curl -Ls bit.ly/IRXoPX
+  end
+
+  def downloader()
+    puts "Looks like you're using an out of date version of #{}"
+  end
+
+  def VersionCompare
+    running = WhatVersionAmI.to_i
+    serverside = CurrentVersion.to_i
+    if running < serverside
+      downloader()
+    end
+  end
+
+#bit.ly/IRXoPX -- Traffic Analyzer
+#bit.ly/1kDIbhG -- Domain Checker
+
+end 
+
 
 #Displays server's name -- useful for log files
   def CommonName()
@@ -113,12 +147,11 @@ class IPOptions
 #Runs IP address through geoiptool which will show location of IP
   def IPLocationFinder()
     ipcheck = IPcheck()
-    if ipcheck.empty? == true
+    if ipcheck.empty? == false
       return `whois #{IPcheck}`
     end
   end
 end
-
 
 #Removes commonlib library at the end of the script
   def CommonLib_Remover()
